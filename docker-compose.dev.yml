@@ -1,0 +1,42 @@
+version: '3.4'
+
+volumes:
+    uploads:
+        driver: local
+   
+services:
+
+    ospos:
+        build:
+            context: .
+            target: ospos_dev
+        container_name: ospos_dev
+        restart: always
+        depends_on:
+          - postgres
+        ports:
+          - "80:80"
+        volumes:
+          - .:/app
+        environment:
+          - PHP_TIMEZONE=UTC
+          - POSTGRES_USERNAME=admin
+          - POSTGRES_PASSWORD=pointofsale
+          - POSTGRES_DB_NAME=ospos
+          - POSTGRES_HOST_NAME=postgres
+          - XDEBUG_CONFIG=remote_host=172.17.0.1
+
+    postgres:
+        image: postgres:13
+        container_name: postgres
+        restart: always
+        ports:
+          - "5432:5432"
+        volumes:
+          - ./database/tables.sql:/docker-entrypoint-initdb.d/tables.sql
+          - ./database/constraints.sql:/docker-entrypoint-initdb.d/constraints.sql
+        environment:
+          - POSTGRES_ROOT_PASSWORD=Chengecha@26!
+          - POSTGRES_DB=ospos
+          - POSTGRES_USER=felix
+          - POSTGRES_PASSWORD=Chengecha@26!

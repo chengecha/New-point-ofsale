@@ -1,0 +1,49 @@
+# PostgreSQL Dockerfile
+# This converts the MySQL configuration to PostgreSQL settings
+
+FROM postgres:15-alpine
+
+# Set PostgreSQL configuration
+RUN echo "host all all 0.0.0.0/0 md5" >> /var/lib/postgresql/data/pg_hba.conf
+
+# Create custom PostgreSQL configuration
+RUN echo "listen_addresses = '*'" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "port = 5432" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "max_connections = 100" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "shared_buffers = 16MB" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "work_mem = 4MB" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "maintenance_work_mem = 16MB" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "effective_cache_size = 32MB" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "max_wal_size = 100MB" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "min_wal_size = 15MB" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "wal_buffers = 1MB" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_connections = on" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_disconnections = on" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_duration = off" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_statement = 'none'" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_line_prefix = '%t [%p]: [%l-1] %c %x %d %u %a %h '" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_temp_files = 0" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_timezone = 'UTC'" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_rotation_age = 1d" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_rotation_size = 10MB" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_min_duration_statement = 5000" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_min_error_statement = 'ERROR'" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_lock_waits = on" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "log_checkpoints = on" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "deadlock_timeout = 1s" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "statement_timeout = 0" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "lock_timeout = 0" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "idle_in_transaction_session_timeout = 0" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "client_min_messages = 'NOTICE'" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "standard_conforming_strings = on" >> /var/lib/postgresql/data/postgresql.conf && \
+    echo "timezone = 'UTC'" >> /var/lib/postgresql/data/postgresql.conf
+
+# Copy initialization scripts
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD pg_isready -U postgres || exit 1
+
+# Expose PostgreSQL port
+EXPOSE 5432

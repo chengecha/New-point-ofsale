@@ -1,0 +1,54 @@
+volumes:
+    uploads:
+        driver: local
+    logs:
+        driver: local
+    postgres:
+        driver: local
+
+networks:
+    app_net:
+    db_net:
+
+services:
+    ospos:
+        build:
+            context: .
+            target: fluxwave
+        restart: always
+        depends_on:
+          - postgres
+        ports:
+          - "127.0.0.1:80:80"
+        networks:
+          - app_net
+          - db_net
+        volumes:
+          - uploads:/app/public/uploads
+          - logs:/app/application/logs
+        environment:
+          - CI_ENV=production
+          - FORCE_HTTPS=false
+          - PHP_TIMEZONE=UTC
+          - POSTGRES_USERNAME=felix
+          - POSTGRES_PASSWORD=Chengecha@26!
+          - POSTGRES_DB_NAME=fogypos
+          - POSTGRES_HOST_NAME=postgres
+
+    postgres:
+        image: postgres:13
+        container_name: postgres
+        restart: always
+        expose:
+          - "5432"
+        networks:
+          - db_net
+        volumes:
+        - ./database/01-tables.sql:/docker-entrypoint-initdb.d/01-tables.sql:ro
+        - ./database/02-constraints.sql:/docker-entrypoint-initdb.d/02-constraints.sql:ro
+        - ./database/03-docker-init.sql:/docker-entrypoint-initdb.d/03-docker-init.sql:ro
+        environment:
+          - POSTGRES_ROOT_PASSWORD=Chengecha@26!
+          - POSTGRES_DB=fogypos
+          - POSTGRES_USER=felix
+          - POSTGRES_PASSWORD=Chengecha@26!

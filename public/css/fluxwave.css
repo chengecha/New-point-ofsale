@@ -1,0 +1,251 @@
+html, body
+{
+	min-height: 100%;
+	margin: 0;
+}
+
+a.none
+{
+	text-decoration: none;
+}
+
+.topbar
+{
+	color: #eee;
+	font-size: 12px;
+	background: #182735;
+	padding: 0.2em;
+}
+
+.navbar
+{
+	border-radius: 0;
+}
+
+.navbar-default .navbar-nav > .active > a, 
+.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a:focus
+{
+	color: #2C3E50;
+	background-color: #FFFFFF;
+}
+
+.jumbotron.push-spaces
+{
+	margin:0;
+	padding: 8px 30px;
+}
+
+.navbar .menu-icon
+{
+	text-align: center;
+	font-size: 12px;
+}
+
+.navbar .menu-icon img
+{
+	width: 24px;
+}
+
+.wrapper
+{
+	font-size: 13px;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+#title_bar
+{
+	position: relative;
+	width: 100%;
+	height: 3em;
+}
+
+#page_title
+{
+	font-size: 22px;
+	font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 400;
+}
+
+#page_subtitle
+{
+	margin-bottom: 0.5em;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#home_module_list, #office_module_list
+{
+	position: relative;
+	padding: 2em 0;
+	text-align: center;
+}
+
+.module_item
+{
+	min-width: 7em;
+	display: inline-block;
+	text-align: center;
+}
+
+.module_item a
+{
+	display: block;
+}
+
+#config_wrapper
+{
+	text-align: center;
+}
+
+#config_info
+{
+	text-align: left;
+}
+
+#config_info .wide
+{
+	width: 30%;
+}
+
+#integrations_header
+{
+	margin:10px 0;
+	text-align:center;
+	font-size:1.4em;
+	font-weight:normal;
+	padding:10px 0	
+}
+
+.wrapper > .container
+{
+	flex: 1 0 auto;
+}
+
+#footer
+{
+	position: relative;
+	text-align: center;
+	font-size: 11px;
+	color: #777777;
+	clear: both;
+	flex-shrink: 0;
+}
+
+a.rollover img
+{
+	padding: 3px;	
+}
+
+#filters.btn-group
+{
+	vertical-align: none;
+}
+
+button.btn.dropdown-toggle.btn-sm
+{
+	background-color: white;
+	color: black;
+	border: 2px solid #dce4ec;
+}
+
+.dropdown-menu
+{
+	font-size: 13px;
+}
+
+.bootstrap-tagsinput
+{
+	background-color: white;
+	color: black;
+	border: 2px solid #dce4ec;
+	box-shadow: none;
+}
+
+label.required
+{
+	color:red;
+}
+
+@media (min-width: 768px)
+{	
+	.navbar-nav > li > a
+	{
+		padding: 10px 10px 9px;
+	}
+
+	.modal-dlg .modal-dialog
+	{
+		width: 500px;
+	}
+
+	.modal-dlg-wide .modal-dialog
+	{
+		width: 750px;
+	}
+}
+
+.modal-body
+{
+	max-height: calc(100vh - 212px);
+	overflow-y: auto;
+}
+
+/* Fix for tab display in modals */
+.modal-body .tab-content
+{
+	min-height: 200px;
+}
+
+.modal-body .tab-content > .tab-pane
+{
+	display: none;
+}
+
+.modal-body .tab-content > .tab-pane.active
+{
+	display: block;
+}
+
+.no-gutter [class*="-1"]
+{
+	padding-right:0;
+	padding-left: 0;
+}
+
+/* Auto-hide navbar: hidden by default. Hovering the top bar opens it and it
+   stays open until the user clicks the X close button. The navbar stays in
+   normal flow: when hidden it collapses to zero height (no reserved space,
+   no overlap), when shown it slides down and pushes page content down. */
+.navbar
+{
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.25s ease-out;
+}
+
+.navbar.navbar-shown
+{
+	max-height: 500px;
+	overflow: visible;
+}
+
+.navbar-close-btn
+{
+	background: none;
+	border: none;
+	color: #FFFFFF;
+	font-size: 22px;
+	line-height: 1;
+	cursor: pointer;
+	opacity: 0.85;
+	padding: 0 8px;
+}
+
+.navbar-close-btn:hover
+{
+	opacity: 1;
+}

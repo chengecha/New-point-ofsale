@@ -1,0 +1,105 @@
+version: '3.4'
+
+volumes:
+    uploads:
+        driver: local
+    logs:
+        driver: local
+    postgres:
+        driver: local
+
+networks:
+    app_net:
+    db_net:
+
+services:
+    ospos:
+        image: jekkos/opensourcepos:3.3.5
+        restart: always
+        depends_on:
+          - postgres
+        expose:
+          - "80"
+        networks:
+          - app_net
+          - db_net
+        volumes:
+          - uploads:/app/public/uploads
+          - logs:/app/application/logs
+        environment:
+          - CI_ENV=${OSPOS_CI_ENV}
+          - FORCE_HTTPS=true
+          - PHP_TIMEZONE=UTC
+          - POSTGRES_USERNAME=${OSPOS_POSTGRES_USERNAME}
+          - POSTGRES_PASSWORD=${OSPOS_POSTGRES_PASSWORD}
+          - POSTGRES_DB_NAME=ospos
+          - POSTGRES_HOST_NAME=postgres
+
+    postgres:
+        image: postgres:13
+        container_name: postgres
+        restart: always
+        expose:
+          - "5432"
+        networks:
+          - db_net
+        volumes:
+          - ./database/tables.sql:/docker-entrypoint-initdb.d/tables.sql
+          - ./database/constraints.sql:/docker-entrypoint-initdb.d/constraints.sql
+          - postgres:/var/lib/postgresql/data:rw
+        environment:
+          - POSTGRES_ROOT_PASSWORD=${OSPOS_POSTGRES_ROOT_PASSWORD}
+          - POSTGRES_DB=ospos
+          - POSTGRES_USER=${OSPOS_POSTGRES_USERNAME}
+          - POSTGRES_PASSWORD=${OSPOS_POSTGRES_PASSWORD}
+
+    phpmyadmin:
+        image: portainer/pgadmin
+        container_name: pgadmin
+        restart: always
+        depends_on:
+          - postgres
+        expose:
+          - "80"
+        networks:
+          - app_net
+          - db_net
+        environment:
+          - POSTGRES_USERNAME=${OSPOS_POSTGRES_USERNAME}
+          - POSTGRES_ROOT_PASSWORD=${OSPOS_POSTGRES_ROOT_PASSWORD}
+          - PMA_HOST=postgres
+
+    nginx:
+        image: nginx:1.19-alpine
+        container_name: nginx
+        restart: always
+        depends_on:
+          - ospos
+          - phpmyadmin
+          - certbot
+        volumes:
+          - ./docker/data/nginx/nginx.tmpl:/etc/nginx/nginx.tmpl:ro
+          - ./docker/data/nginx/error_log.log:/etc/nginx/error_log.log
+          - ./docker/data/certbot/conf:/etc/letsencrypt:ro
+          - ./docker/data/certbot/www:/var/www/certbot:ro
+        ports:
+          - "80:80"
+          - "443:443"
+          - "8000:8000"
+        networks:
+          - app_net
+        environment:
+          - WEB_DOMAIN=${OSPOS_DOMAIN_NAME}
+          - ESC=$$
+        command: "/bin/sh -c 'envsubst < /etc/nginx/nginx.tmpl > /etc/nginx/nginx.conf & while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+    certbot:
+        image: certbot/certbot
+        container_name: certbot
+        restart: always
+        volumes:
+          - ./docker/data/certbot/conf:/etc/letsencrypt
+          - ./docker/data/certbot/www:/var/www/certbot
+        networks:
+          - app_net
+        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
