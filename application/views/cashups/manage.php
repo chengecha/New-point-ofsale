@@ -30,6 +30,49 @@ $(document).ready(function()
 			});
 		}
 	});
+
+	$('#new_cashup_btn').off('click').on('click', function(event) {
+		event.preventDefault();
+
+		$.get('<?php echo site_url($controller_name."/check_open_cashup_exists"); ?>', function(response) {
+			var data = typeof response === 'string' ? JSON.parse(response) : response;
+
+			if(data.exists) {
+				$.notify('<?php echo $this->lang->line('cashups_duplicate_entry'); ?>', {type: 'danger'});
+				return;
+			}
+
+			var $link = $('#new_cashup_btn');
+			BootstrapDialog.show({
+				title: $link.attr('title'),
+				message: (function() {
+					var node = $('<div></div>');
+					$.get($link.data('href'), function(data) {
+						node.html(data);
+					});
+					return node;
+				})(),
+				buttons: [{
+					id: 'submit',
+					label: $link.data('btnSubmit'),
+					cssClass: 'btn-primary',
+					hotkey: 13,
+					action: function(dialog_ref) {
+						dialog_support.submit('submit')(dialog_ref);
+						return false;
+					}
+				}, {
+					id: 'close',
+					label: '<?php echo $this->lang->line('common_close'); ?>',
+					cssClass: 'btn-primary',
+					action: function(dialog_ref) {
+						dialog_ref.close();
+					}
+				}],
+				cssClass: 'modal-dlg'
+			});
+		});
+	});
 });
 </script>
 
@@ -39,7 +82,7 @@ $(document).ready(function()
 	<button onclick="javascript:printdoc()" class='btn btn-info btn-sm pull-right'>
 		<span class="glyphicon glyphicon-print">&nbsp;</span><?php echo $this->lang->line('common_print'); ?>
 	</button>
-	<button class='btn btn-info btn-sm pull-right modal-dlg' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/view"); ?>'
+	<button id="new_cashup_btn" class='btn btn-info btn-sm pull-right modal-dlg' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/view"); ?>'
 			title='<?php echo $this->lang->line($controller_name.'_new'); ?>'>
 		<span class="glyphicon glyphicon-tags">&nbsp</span><?php echo $this->lang->line($controller_name . '_new'); ?>
 	</button>

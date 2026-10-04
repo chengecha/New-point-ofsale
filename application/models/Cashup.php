@@ -62,11 +62,21 @@ public function get_multiple_info($cash_up_ids)
 			MAX(cash_up.close_date) AS close_date,
 			MAX(cash_up.open_amount_cash) AS open_amount_cash,
 			MAX(cash_up.transfer_amount_cash) AS transfer_amount_cash,
+			MAX(cash_up.cash_in_amount) AS cash_in_amount,
+			MAX(cash_up.cash_in_type) AS cash_in_type,
+			MAX(cash_up.cash_out_amount) AS cash_out_amount,
+			MAX(cash_up.cash_out_type) AS cash_out_type,
 			MAX(cash_up.closed_amount_cash) AS closed_amount_cash,
 			MAX(cash_up.closed_amount_due) AS closed_amount_due,
 			MAX(cash_up.closed_amount_card) AS closed_amount_card,
 			MAX(cash_up.closed_amount_check) AS closed_amount_check,
+			MAX(cash_up.closed_amount_mpesa) AS closed_amount_mpesa,
+			MAX(cash_up.expected_cash) AS expected_cash,
 			MAX(cash_up.closed_amount_total) AS closed_amount_total,
+			MAX(cash_up.total_trx_amount) AS total_trx_amount,
+			MAX(cash_up.total_expense) AS total_expense,
+			MAX(cash_up.actual_cash_counted) AS actual_cash_counted,
+			MAX(cash_up.discrepancy_variance) AS discrepancy_variance,
 			MAX(cash_up.description) AS description,
 			MAX(cash_up.note) AS note,
 			MAX(cash_up.open_employee_id) AS open_employee_id,
@@ -131,11 +141,21 @@ public function get_multiple_info($cash_up_ids)
 			cash_up.close_date AS close_date,
 			cash_up.open_amount_cash AS open_amount_cash,
 			cash_up.transfer_amount_cash AS transfer_amount_cash,
+			cash_up.cash_in_amount AS cash_in_amount,
+			cash_up.cash_in_type AS cash_in_type,
+			cash_up.cash_out_amount AS cash_out_amount,
+			cash_up.cash_out_type AS cash_out_type,
 			cash_up.closed_amount_cash AS closed_amount_cash,
 			cash_up.closed_amount_due AS closed_amount_due,
 			cash_up.closed_amount_card AS closed_amount_card,
 			cash_up.closed_amount_check AS closed_amount_check,
+			cash_up.closed_amount_mpesa AS closed_amount_mpesa,
+			cash_up.expected_cash AS expected_cash,
 			cash_up.closed_amount_total AS closed_amount_total,
+			cash_up.total_trx_amount AS total_trx_amount,
+			cash_up.total_expense AS total_expense,
+			cash_up.actual_cash_counted AS actual_cash_counted,
+			cash_up.discrepancy_variance AS discrepancy_variance,
 			cash_up.description AS description,
 			cash_up.note AS note,
 			cash_up.open_employee_id AS open_employee_id,
@@ -209,7 +229,54 @@ public function get_multiple_info($cash_up_ids)
 	}
 
 	/*
-	Deletes a list of cashups
+		Check if a cashup already exists for the same employee on the same day
+	*/
+	public function exists_open_for_employee_on_date($employee_id, $open_date)
+	{
+		$this->db->from('cash_up');
+		$this->db->where('open_employee_id', $employee_id);
+		$this->db->where('deleted', 0);
+
+		if(empty($this->config->item('date_or_time_format')))
+		{
+			$open_date = date('Y-m-d', strtotime($open_date));
+		}
+		else
+		{
+			$open_date = substr($open_date, 0, 10);
+		}
+
+		$this->db->where('open_date::date = ' . $this->db->escape($open_date), NULL, FALSE);
+
+		return $this->db->get()->num_rows() > 0;
+	}
+
+	/*
+		Check if a cashup already exists for the same employee on the same day (excluding the given cashup_id)
+	*/
+	public function exists_open_for_employee_on_date_exclude($employee_id, $open_date, $exclude_id)
+	{
+		$this->db->from('cash_up');
+		$this->db->where('open_employee_id', $employee_id);
+		$this->db->where('deleted', 0);
+
+		if(empty($this->config->item('date_or_time_format')))
+		{
+			$open_date = date('Y-m-d', strtotime($open_date));
+		}
+		else
+		{
+			$open_date = substr($open_date, 0, 10);
+		}
+
+		$this->db->where('open_date::date = ' . $this->db->escape($open_date), NULL, FALSE);
+		$this->db->where('cashup_id !=', $exclude_id);
+
+		return $this->db->get()->num_rows() > 0;
+	}
+
+	/*
+		Deletes a list of cashups
 	*/
 	public function delete_list($cashup_ids)
 	{

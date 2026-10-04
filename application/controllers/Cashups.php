@@ -49,8 +49,7 @@ class Cashups extends Secure_Controller
 	public function view($cashup_id = -1)
 	{
 		$data = array();
-
-		$data['employees'] = array();
+		$data['is_close_mode'] = FALSE;
 		foreach($this->Employee->get_all()->result() as $employee)
 		{
 			foreach(get_object_vars($employee) as $property => $value)
@@ -60,6 +59,11 @@ class Cashups extends Secure_Controller
 
 			$data['employees'][$employee->person_id] = $employee->first_name . ' ' . $employee->last_name;
 		}
+
+		$data['payment_types'] = array(
+			'cash' => $this->lang->line('sales_cash'),
+			'mpesa' => $this->lang->line('sales_mpesa')
+		);
 
 		$cash_ups_info = $this->Cashup->get_info($cashup_id);
 
@@ -71,22 +75,39 @@ class Cashups extends Secure_Controller
 		// open cashup
 		if(empty($cash_ups_info->cashup_id))
 		{
-			$cash_ups_info->open_date = date('Y-m-d H:i:s');
-			$cash_ups_info->close_date = $cash_ups_info->open_date;
-			$cash_ups_info->open_employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
-			$cash_ups_info->close_employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+			$logged_in_employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+			$open_date = date('Y-m-d H:i:s');
+
+			if($this->Cashup->exists_open_for_employee_on_date($logged_in_employee_id, $open_date))
+			{
+				echo '<div class="alert alert-danger">' . $this->lang->line('cashups_duplicate_entry') . '</div>';
+				return;
+			}
+
+			$cash_ups_info->open_date = $open_date;
+			$cash_ups_info->open_employee_id = $logged_in_employee_id;
+
+			$cash_ups_info->cash_in_amount = 0;
+			$cash_ups_info->cash_in_type = 'cash';
+			$cash_ups_info->cash_out_amount = 0;
+			$cash_ups_info->cash_out_type = 'cash';
+			$cash_ups_info->total_trx_amount = 0;
+			$cash_ups_info->total_expense = 0;
+			$cash_ups_info->actual_cash_counted = 0;
+			$cash_ups_info->discrepancy_variance = 0;
 		}
 		// if all the amounts are null or 0 that means it's a close cashup
 		elseif(floatval($cash_ups_info->closed_amount_cash) == 0 &&
 			floatval($cash_ups_info->closed_amount_due) == 0 &&
 			floatval($cash_ups_info->closed_amount_card) == 0 &&
-			floatval($cash_ups_info->closed_amount_check) == 0)
+			floatval($cash_ups_info->closed_amount_check) == 0 &&
+			floatval($cash_ups_info->closed_amount_mpesa) == 0)
 		{
+			$data['is_close_mode'] = TRUE;
+			error_log('DEBUG Cashup view: close cashup block entered for cashup_id=' . $cashup_id . ', open_date=' . $cash_ups_info->open_date . ', open_amount_cash=' . $cash_ups_info->open_amount_cash);
+
 			// set the close date and time to the actual as this is a close session
 			$cash_ups_info->close_date = date('Y-m-d H:i:s');
-
-			// the closed amount starts with the open amount -/+ any trasferred amount
-			$cash_ups_info->closed_amount_cash = $cash_ups_info->open_amount_cash + $cash_ups_info->transfer_amount_cash;
 
 			// if it's date mode only and not date & time truncate the open and end date to date only
 			if(empty($this->config->item('date_or_time_format')))
@@ -104,51 +125,178 @@ class Cashups extends Secure_Controller
 			$this->load->model('reports/Summary_payments');
 			$reports_data = $this->Summary_payments->getData($inputs);
 
+			$cash_payments = 0;
+			$mpesa_payments = 0;
+
 			foreach($reports_data as $row)
 			{
 				if($row['trans_group'] == $this->lang->line('reports_trans_payments'))
 				{
 					if($row['trans_type'] == $this->lang->line('sales_cash'))
 					{
-						$cash_ups_info->closed_amount_cash += $this->xss_clean($row['trans_amount']);
+						$cash_payments += $this->xss_clean($row['trans_amount']);
 					}
-					elseif($row['trans_type'] == $this->lang->line('sales_due'))
+					elseif($row['trans_type'] == $this->lang->line('sales_mpesa'))
 					{
-						$cash_ups_info->closed_amount_due += $this->xss_clean($row['trans_amount']);
-					}
-					elseif($row['trans_type'] == $this->lang->line('sales_debit') ||
-						$row['trans_type'] == $this->lang->line('sales_credit'))
-					{
-						$cash_ups_info->closed_amount_card += $this->xss_clean($row['trans_amount']);
-					}
-					elseif($row['trans_type'] == $this->lang->line('sales_check'))
-					{
-						$cash_ups_info->closed_amount_check += $this->xss_clean($row['trans_amount']);
+						$mpesa_payments += $this->xss_clean($row['trans_amount']);
 					}
 				}
 			}
 
-			// lookup expenses paid in cash
-			$filters = array(
-						 'only_cash' => TRUE,
-						 'only_due' => FALSE,
-						 'only_check' => FALSE,
-						 'only_credit' => FALSE,
-						 'only_debit' => FALSE,
-						 'is_deleted' => FALSE);
-			$payments = $this->Expense->get_payments_summary('', array_merge($inputs, $filters));
+			// Set closed amounts (for backward compatibility)
+			$cash_ups_info->closed_amount_cash = $cash_payments;
+			$cash_ups_info->closed_amount_mpesa = $mpesa_payments;
 
-			foreach($payments as $row)
+			// Total trx amount = cash + mpesa payments
+			$cash_ups_info->total_trx_amount = $cash_payments + $mpesa_payments;
+
+			// lookup total expenses for the day
+			$this->db->select('(SUM(amount)) AS total_amount', FALSE);
+			$this->db->from('expenses');
+			$this->db->where('deleted', 0);
+
+			if(empty($this->config->item('date_or_time_format')))
 			{
-				$cash_ups_info->closed_amount_cash -= $this->xss_clean($row['amount']);
+				$this->db->where('date::date = ' . $this->db->escape(date('Y-m-d')), NULL, FALSE);
+			}
+			else
+			{
+				$this->db->where('date::date = ' . $this->db->escape(date('Y-m-d')), NULL, FALSE);
 			}
 
-			$cash_ups_info->closed_amount_total = $this->_calculate_total($cash_ups_info->open_amount_cash, $cash_ups_info->transfer_amount_cash, $cash_ups_info->closed_amount_cash, $cash_ups_info->closed_amount_due, $cash_ups_info->closed_amount_card, $cash_ups_info->closed_amount_check);
+			$query = $this->db->get();
+			$exp_row = $query->row();
+			$total_expense = $exp_row && $exp_row->total_amount ? floatval($exp_row->total_amount) : 0;
+			$cash_ups_info->total_expense = $total_expense;
+
+			json_log('cashup_view_expense', ['cashup_id' => $cashup_id, 'open_date' => $cash_ups_info->open_date, 'close_date' => $cash_ups_info->close_date, 'total_expense' => $total_expense, 'rows' => $query->num_rows(), 'driver' => $this->db->dbdriver]);
+
+			// Initialize new fields
+			$cash_ups_info->cash_in_amount = 0;
+			$cash_ups_info->cash_in_type = 'cash';
+			$cash_ups_info->cash_out_amount = 0;
+			$cash_ups_info->cash_out_type = 'cash';
+			$cash_ups_info->actual_cash_counted = 0;
+			$cash_ups_info->discrepancy_variance = 0;
+
+			// Total = opencash + cashin + trxAmount
+			$cash_ups_info->closed_amount_total = $this->_calculate_total(
+				floatval($cash_ups_info->open_amount_cash),
+				floatval($cash_ups_info->cash_in_amount),
+				floatval($cash_ups_info->total_trx_amount)
+			);
+
+			// Expected Cash = Total - (cashout + expense_cash)
+			$cash_ups_info->expected_cash = $this->_calculate_expected_cash(
+				floatval($cash_ups_info->closed_amount_total),
+				floatval($cash_ups_info->cash_out_amount),
+				floatval($cash_ups_info->total_expense)
+			);
 		}
 
 		$data['cash_ups_info'] = $cash_ups_info;
 
 		$this->load->view("cashups/form", $data);
+	}
+
+	public function initiate_close()
+	{
+		$cashup_id = $this->input->post('cashup_id');
+		$cash_ups_info = $this->Cashup->get_info($cashup_id);
+
+		foreach(get_object_vars($cash_ups_info) as $property => $value)
+		{
+			$cash_ups_info->$property = $this->xss_clean($value);
+		}
+
+		// set the close date and time to the actual as this is a close session
+		$cash_ups_info->close_date = date('Y-m-d H:i:s');
+
+		// if it's date mode only and not date & time truncate the open and end date to date only
+		if(empty($this->config->item('date_or_time_format')))
+		{
+			$inputs = array('start_date' => substr($cash_ups_info->open_date, 0, 10), 'end_date' => substr($cash_ups_info->close_date, 0, 10), 'sale_type' => 'complete', 'location_id' => 'all');
+		}
+		else
+		{
+			$inputs = array('start_date' => $cash_ups_info->open_date, 'end_date' => $cash_ups_info->close_date, 'sale_type' => 'complete', 'location_id' => 'all');
+		}
+
+		// get all the transactions payment summaries
+		$this->load->model('reports/Summary_payments');
+		$reports_data = $this->Summary_payments->getData($inputs);
+
+		$cash_payments = 0;
+		$mpesa_payments = 0;
+
+		foreach($reports_data as $row)
+		{
+			if($row['trans_group'] == $this->lang->line('reports_trans_payments'))
+			{
+				if($row['trans_type'] == $this->lang->line('sales_cash'))
+				{
+					$cash_payments += $this->xss_clean($row['trans_amount']);
+				}
+				elseif($row['trans_type'] == $this->lang->line('sales_mpesa'))
+				{
+					$mpesa_payments += $this->xss_clean($row['trans_amount']);
+				}
+			}
+		}
+
+		// Set closed amounts (for backward compatibility)
+		$cash_ups_info->closed_amount_cash = $cash_payments;
+		$cash_ups_info->closed_amount_mpesa = $mpesa_payments;
+
+		// Total trx amount = cash + mpesa payments
+		$cash_ups_info->total_trx_amount = $cash_payments + $mpesa_payments;
+
+		// lookup total expenses for the day
+		$this->db->select('(SUM(amount)) AS total_amount', FALSE);
+		$this->db->from('expenses');
+		$this->db->where('deleted', 0);
+
+		if(empty($this->config->item('date_or_time_format')))
+		{
+			$this->db->where('date::date = ' . $this->db->escape(date('Y-m-d')), NULL, FALSE);
+		}
+		else
+		{
+			$this->db->where('date::date = ' . $this->db->escape(date('Y-m-d')), NULL, FALSE);
+		}
+
+		$query = $this->db->get();
+		$exp_row = $query->row();
+		$total_expense = $exp_row && $exp_row->total_amount ? floatval($exp_row->total_amount) : 0;
+		$cash_ups_info->total_expense = $total_expense;
+
+		json_log('cashup_initiate_close_expense', ['cashup_id' => $cashup_id, 'open_date' => $cash_ups_info->open_date, 'close_date' => $cash_ups_info->close_date, 'total_expense' => $total_expense, 'rows' => $query->num_rows(), 'driver' => $this->db->dbdriver]);
+
+		// Total = opencash + cashin + trxAmount
+		$cash_ups_info->closed_amount_total = $this->_calculate_total(
+			floatval($cash_ups_info->open_amount_cash),
+			floatval($cash_ups_info->cash_in_amount),
+			floatval($cash_ups_info->total_trx_amount)
+		);
+
+		// Expected Cash = Total - (cashout + expense_cash)
+		$cash_ups_info->expected_cash = $this->_calculate_expected_cash(
+			floatval($cash_ups_info->closed_amount_total),
+			floatval($cash_ups_info->cash_out_amount),
+			floatval($cash_ups_info->total_expense)
+		);
+
+		echo json_encode(array(
+			'close_date' => to_datetime(strtotime($cash_ups_info->close_date)),
+			'close_employee_id' => $cash_ups_info->close_employee_id,
+			'closed_amount_cash' => to_currency_no_money($cash_payments),
+			'closed_amount_mpesa' => to_currency_no_money($mpesa_payments),
+			'total_trx_amount' => to_currency_no_money($cash_ups_info->total_trx_amount),
+			'total_expense' => to_currency_no_money($total_expense),
+			'closed_amount_total' => to_currency_no_money($cash_ups_info->closed_amount_total),
+			'expected_cash' => to_currency_no_money($cash_ups_info->expected_cash),
+			'success' => TRUE
+		));
 	}
 
 	public function get_row($row_id)
@@ -171,18 +319,43 @@ class Cashups extends Secure_Controller
 			'open_date' => $open_date_formatter->format('Y-m-d H:i:s'),
 			'close_date' => $close_date_formatter->format('Y-m-d H:i:s'),
 			'open_amount_cash' => $this->input->post('open_amount_cash') == '' ? 0 : parse_decimals($this->input->post('open_amount_cash')),
+			'cash_in_amount' => $this->input->post('cash_in_amount') == '' ? 0 : parse_decimals($this->input->post('cash_in_amount')),
+			'cash_in_type' => $this->input->post('cash_in_type'),
+			'cash_out_amount' => $this->input->post('cash_out_amount') == '' ? 0 : parse_decimals($this->input->post('cash_out_amount')),
+			'cash_out_type' => $this->input->post('cash_out_type'),
+			'total_trx_amount' => $this->input->post('total_trx_amount') == '' ? 0 : parse_decimals($this->input->post('total_trx_amount')),
+			'total_expense' => $this->input->post('total_expense') == '' ? 0 : parse_decimals($this->input->post('total_expense')),
+			'actual_cash_counted' => $this->input->post('actual_cash_counted') == '' ? 0 : parse_decimals($this->input->post('actual_cash_counted')),
+			'discrepancy_variance' => $this->input->post('discrepancy_variance') == '' ? 0 : parse_decimals($this->input->post('discrepancy_variance')),
 			'transfer_amount_cash' => $this->input->post('transfer_amount_cash') == '' ? 0 : parse_decimals($this->input->post('transfer_amount_cash')),
 			'closed_amount_cash' => $this->input->post('closed_amount_cash') == '' ? 0 : parse_decimals($this->input->post('closed_amount_cash')),
 			'closed_amount_due' => $this->input->post('closed_amount_due') == '' ? 0 : parse_decimals($this->input->post('closed_amount_due')),
 			'closed_amount_card' => $this->input->post('closed_amount_card') == '' ? 0 : parse_decimals($this->input->post('closed_amount_card')),
 			'closed_amount_check' => $this->input->post('closed_amount_check') == '' ? 0 : parse_decimals($this->input->post('closed_amount_check')),
+			'closed_amount_mpesa' => $this->input->post('closed_amount_mpesa') == '' ? 0 : parse_decimals($this->input->post('closed_amount_mpesa')),
+			'expected_cash' => $this->input->post('expected_cash') == '' ? 0 : parse_decimals($this->input->post('expected_cash')),
 			'closed_amount_total' => $this->input->post('closed_amount_total') == '' ? 0 : parse_decimals($this->input->post('closed_amount_total')),
-			'note' => $this->input->post('note') != NULL,
 			'description' => $this->input->post('description'),
 			'open_employee_id' => $this->input->post('open_employee_id'),
 			'close_employee_id' => $this->input->post('close_employee_id'),
 			'deleted' => $this->input->post('deleted') != NULL
 		);
+
+		if($cashup_id == -1 || !$this->Cashup->exists($cashup_id))
+		{
+			$duplicate_exists = $this->Cashup->exists_open_for_employee_on_date($cash_up_data['open_employee_id'], $cash_up_data['open_date']);
+		}
+		else
+		{
+			$duplicate_exists = $this->Cashup->exists_open_for_employee_on_date_exclude($cash_up_data['open_employee_id'], $cash_up_data['open_date'], $cashup_id);
+		}
+
+		if($duplicate_exists)
+		{
+			json_log('cashup_duplicate', ['cashup_id' => $cashup_id, 'open_employee_id' => $cash_up_data['open_employee_id'], 'open_date' => $cash_up_data['open_date']]);
+			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('cashups_duplicate_entry'), 'id' => -1));
+			return;
+		}
 
 		if($this->Cashup->save($cash_up_data, $cashup_id))
 		{
@@ -207,6 +380,16 @@ class Cashups extends Secure_Controller
 		}
 	}
 
+	public function check_open_cashup_exists()
+	{
+		$logged_in_employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+		$open_date = date('Y-m-d H:i:s');
+
+		$exists = $this->Cashup->exists_open_for_employee_on_date($logged_in_employee_id, $open_date);
+
+		echo json_encode(array('exists' => $exists));
+	}
+
 	public function delete()
 	{
 		$cash_ups_to_delete = $this->input->post('ids');
@@ -224,28 +407,47 @@ class Cashups extends Secure_Controller
 	}
 
 	/*
-	AJAX call from cashup input form to calculate the total
+		AJAX call from cashup input form to calculate the total
 	*/
 	public function ajax_cashup_total()
 	{
 		$open_amount_cash = parse_decimals($this->input->post('open_amount_cash'));
-		$transfer_amount_cash = parse_decimals($this->input->post('transfer_amount_cash'));
-		$closed_amount_cash = parse_decimals($this->input->post('closed_amount_cash'));
-		$closed_amount_due = parse_decimals($this->input->post('closed_amount_due'));
-		$closed_amount_card = parse_decimals($this->input->post('closed_amount_card'));
-		$closed_amount_check = parse_decimals($this->input->post('closed_amount_check'));
+		$cash_in_amount = parse_decimals($this->input->post('cash_in_amount'));
+		$cash_out_amount = parse_decimals($this->input->post('cash_out_amount'));
+		$total_trx_amount = parse_decimals($this->input->post('total_trx_amount'));
+		$total_expense = parse_decimals($this->input->post('total_expense'));
+		$actual_cash_counted = parse_decimals($this->input->post('actual_cash_counted'));
 
-		$total = $this->_calculate_total($open_amount_cash, $transfer_amount_cash, $closed_amount_due, $closed_amount_cash, $closed_amount_card, $closed_amount_check);
+		// Total = opencash + cashin + trxAmount
+		$total = $this->_calculate_total($open_amount_cash, $cash_in_amount, $total_trx_amount);
 
-		echo json_encode(array('total' => to_currency_no_money($total)));
+		// Expected Cash = Total - (cashout + expense_cash)
+		$expected_cash = $this->_calculate_expected_cash($total, $cash_out_amount, $total_expense);
+
+		// Discrepancy Variance = actual_cash_counted - expected_cash
+		$discrepancy_variance = $actual_cash_counted - $expected_cash;
+
+		echo json_encode(array(
+			'total' => to_currency_no_money($total),
+			'expected_cash' => to_currency_no_money($expected_cash),
+			'discrepancy_variance' => to_currency_no_money($discrepancy_variance)
+		));
 	}
 
 	/*
-	Calculate total
+		Calculate total = opencash + cashin + trxAmount
 	*/
-	private function _calculate_total($open_amount_cash, $transfer_amount_cash, $closed_amount_due, $closed_amount_cash, $closed_amount_card, $closed_amount_check)
+	private function _calculate_total($open_amount_cash, $cash_in_amount, $total_trx_amount)
 	{
-		return ($closed_amount_cash - $open_amount_cash - $transfer_amount_cash + $closed_amount_due + $closed_amount_card + $closed_amount_check);
+		return ($open_amount_cash + $cash_in_amount + $total_trx_amount);
+	}
+
+	/*
+		Calculate expected cash = total - (cashout + expense_cash)
+	*/
+	private function _calculate_expected_cash($total, $cash_out_amount, $total_expense)
+	{
+		return ($total - $cash_out_amount - $total_expense);
 	}
 }
 ?>
