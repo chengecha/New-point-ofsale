@@ -503,12 +503,14 @@ $(document).ready(function()
 						$('#close_fields_section .close_fields_inner, #close_employee_section').show();
 						recalculate_totals();
 
-						// Validate notes if variance is negative
+						// Validate notes if variance is negative and close day is checked
 						setTimeout(function() {
-							var discrepancy = parseFloat($('#discrepancy_variance').val().replace(/[^0-9.\-]/g, ''));
-							if(discrepancy < 0) {
-								$('#description').prop('required', true);
-								$.notify('<?php echo $this->lang->line('cashups_notes_required_if_negative'); ?>', {type: 'warning'});
+							if($('#close_day').is(':checked')) {
+								var discrepancy = parseFloat($('#discrepancy_variance').val().replace(/[^0-9.\-]/g, ''));
+								if(discrepancy < 0) {
+									$('#description').prop('required', true);
+									$.notify('<?php echo $this->lang->line('cashups_notes_required_if_negative'); ?>', {type: 'warning'});
+								}
 							}
 						}, 500);
 					}
@@ -566,16 +568,16 @@ $(document).ready(function()
 			}
 		},
 		errorPlacement: function(error, element) {
-			if(element.attr('name') == 'description' && parseFloat($('#discrepancy_variance').val().replace(/[^0-9.\-]/g, '')) < 0) {
+			if(element.attr('name') == 'description' && $('#close_day').is(':checked') && parseFloat($('#discrepancy_variance').val().replace(/[^0-9.\-]/g, '')) < 0) {
 				error.insertAfter('#description');
 			} else {
 				form_support.error(error, element);
 			}
 		}
 	}, form_support.error));
-	$.validator.addMethod('notes_required_if_negative', function(value, element) {
+		$.validator.addMethod('notes_required_if_negative', function(value, element) {
 		var discrepancy = parseFloat($('#discrepancy_variance').val().replace(/[^0-9.\-]/g, ''));
-		if(discrepancy < 0) {
+		if($('#close_day').is(':checked') && discrepancy < 0) {
 			return value.trim().length > 0;
 		}
 		return true;
