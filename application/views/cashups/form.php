@@ -249,7 +249,7 @@
 	<?php if(!empty($cash_ups_info->cashup_id)): ?>
 	<div class="form-group form-group-sm" id="close_fields_section">
 		<?php if(empty($cash_ups_info->closed_amount_total)): ?>
-		<div class='col-xs-3 col-xs-offset-3'>
+		<div class='col-xs-2 col-xs-offset-3'>
 			<?php echo form_button(array(
 				'name' => 'initiate_close_btn',
 				'id' => 'initiate_close_btn',
@@ -257,12 +257,13 @@
 				'class' => 'btn btn-primary btn-sm'
 			)); ?>
 		</div>
-		<div class='col-xs-3 col-xs-offset-3' style="padding-top: 5px;">
+		<div class='col-xs-2' style="padding-top: 5px; padding-left: 10px;">
 			<?php echo form_checkbox(array(
 				'name'=>'close_day',
 				'id'=>'close_day',
 				'value'=>1,
-				'checked'=>0
+				'checked'=>0,
+				'style'=>'margin-left: 10px;'
 			)); ?>
 			<?php echo form_label($this->lang->line('cashups_close_day'), 'close_day', array('class'=>'control-label')); ?>
 		</div>
