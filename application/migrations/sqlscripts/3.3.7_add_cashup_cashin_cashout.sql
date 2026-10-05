@@ -1,0 +1,9 @@
+-- Add Cash In / Cash Out and new calculation columns to cash_up table
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS cash_in_amount DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS cash_in_type VARCHAR(32) NOT NULL DEFAULT 'cash';
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS cash_out_amount DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS cash_out_type VARCHAR(32) NOT NULL DEFAULT 'cash';
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS total_trx_amount DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS total_expense DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS actual_cash_counted DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS discrepancy_variance DECIMAL(15,2) NOT NULL DEFAULT 0;

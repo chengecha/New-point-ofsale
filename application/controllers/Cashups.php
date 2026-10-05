@@ -337,7 +337,7 @@ class Cashups extends Secure_Controller
 			'expected_cash' => $this->input->post('expected_cash') == '' ? 0 : parse_decimals($this->input->post('expected_cash')),
 			'closed_amount_total' => $this->input->post('closed_amount_total') == '' ? 0 : parse_decimals($this->input->post('closed_amount_total')),
 			'description' => $this->input->post('description'),
-			'note' => $this->input->post('note') !== NULL ? $this->input->post('note') : '',
+			'note' => 0,
 			'open_employee_id' => $this->input->post('open_employee_id'),
 			'close_employee_id' => $this->input->post('close_employee_id'),
 			'deleted' => $this->input->post('deleted') != NULL

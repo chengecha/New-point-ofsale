@@ -137,3 +137,14 @@ ALTER TABLE ospos_sales_reward_points
 --
 ALTER TABLE ospos_mpesa_transactions
   ADD CONSTRAINT ospos_mpesa_transactions_ibfk_1 FOREIGN KEY (sale_id) REFERENCES ospos_sales (sale_id);
+
+
+-- Run via: psql -d your_database -f application/migrations/sqlscripts/3.3.7_add_cashup_cashin_cashout.sql
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS cash_in_amount DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS cash_in_type VARCHAR(32) NOT NULL DEFAULT 'cash';
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS cash_out_amount DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS cash_out_type VARCHAR(32) NOT NULL DEFAULT 'cash';
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS total_trx_amount DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS total_expense DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS actual_cash_counted DECIMAL(15,2) NOT NULL DEFAULT 0;
+ALTER TABLE ospos_cash_up ADD COLUMN IF NOT EXISTS discrepancy_variance DECIMAL(15,2) NOT NULL DEFAULT 0;

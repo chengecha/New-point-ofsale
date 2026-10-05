@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |				 cubrid, ibase, mssql, mysql, mysqli, oci8,
 |				 odbc, pdo, postgre, sqlite, sqlite3, sqlsrv
 |	['dbprefix'] You can add an optional prefix, which will be added
-|				 to the table name when using the  Query Builder class
+|				 to the table name when using the  Query Builder class.
 |	['pconnect'] TRUE/FALSE - Whether to use a persistent connection
 |	['db_debug'] TRUE/FALSE - Whether database errors should be displayed.
 |	['cache_on'] TRUE/FALSE - Enables/disables query caching
@@ -45,9 +45,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |			'mysqli' and 'pdo/mysql' drivers accept an array with the following options:
 |
 |				'ssl_key'    - Path to the private key file
-|				'ssl_cert'   - Path to the public key certificate file
+|				'ssl_cert'   - Path to the public certificate file
 |				'ssl_ca'     - Path to the certificate authority file
-|				'ssl_capath' - Path to a directory containing trusted CA certificats in PEM format
+|				'ssl_capath' - A directory containing trusted CA certificats in PEM format
 |				'ssl_cipher' - List of *allowed* ciphers to be used for the encryption, separated by colons (':')
 |				'ssl_verify' - TRUE/FALSE; Whether verify the server certificate or not ('mysqli' only)
 |
@@ -82,15 +82,12 @@ $query_builder = TRUE;
 // 	'username' => !empty(getenv('POSTGRES_USERNAME')) ? getenv('POSTGRES_USERNAME') : 'felix',
 // 	'password' => !empty(getenv('POSTGRES_PASSWORD')) ? getenv('POSTGRES_PASSWORD') : 'Chengecha@26!',
 // 	'database' => !empty(getenv('POSTGRES_DB_NAME')) ? getenv('POSTGRES_DB_NAME') : 'fogypos',
-$db_hostname = (string) getenv('POSTGRES_HOST_NAME');
-$db_options = '';
 
-if (strpos($db_hostname, 'neon.tech') !== false) {
-   $db_options = 'endpoint=' . explode('.', $db_hostname)[0];
-}
+$db_hostname = (string) getenv('POSTGRES_HOST_NAME');
 
 // Determine SSL requirement for PostgreSQL
 // The Postgre driver ignores the 'encrypt' field and uses 'sslmode' instead
+// For local databases, SSL is disabled to avoid connection overhead
 $db_ssl = !empty(getenv('DB_SSL')) && getenv('DB_SSL') === 'true';
 
 // Auto-enable SSL for known cloud PostgreSQL providers that require it
@@ -114,7 +111,7 @@ $db['default'] = array(
 
 	'dbdriver' => 'postgre',
 	'dbprefix' => 'ospos_',
-	'pconnect' => FALSE,
+	'pconnect' => TRUE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
 	'cachedir' => '',
@@ -122,11 +119,11 @@ $db['default'] = array(
 	'dbcollat' => '',
 	'swap_pre' => '',
 	'schema'   => 'public',
-	'sslmode'  => $db_ssl ? 'require' : 'prefer',
-	'options'  => $db_options,
 	'encrypt'  => $db_ssl,
+	'sslmode'  => $db_ssl ? 'require' : 'disable',
+	'options'  => '',
 	'compress' => FALSE,
 	'stricton' => FALSE,
 	'failover' => array(),
-	'save_queries' => TRUE
+	'save_queries' => FALSE
 );

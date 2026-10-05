@@ -750,20 +750,24 @@ function get_cashups_manage_table_headers()
 {
 	$CI =& get_instance();
 
-	$headers = array(
+		$headers = array(
 		array('cashup_id' => $CI->lang->line('cashups_id')),
 		array('open_date' => $CI->lang->line('cashups_opened_date')),
 		array('open_employee_id' => $CI->lang->line('cashups_open_employee')),
 		array('open_amount_cash' => $CI->lang->line('cashups_open_amount_cash')),
-		array('transfer_amount_cash' => $CI->lang->line('cashups_transfer_amount_cash')),
+		array('cash_in_amount' => $CI->lang->line('cashups_cash_in_amount')),
+		array('cash_out_amount' => $CI->lang->line('cashups_cash_out_amount')),
+		array('cash_in_type' => $CI->lang->line('cashups_cash_in_type')),
+		array('cash_out_type' => $CI->lang->line('cashups_cash_out_type')),
 		array('close_date' => $CI->lang->line('cashups_closed_date')),
 		array('close_employee_id' => $CI->lang->line('cashups_close_employee')),
-		array('closed_amount_cash' => $CI->lang->line('cashups_closed_amount_cash')),
-		array('note' => $CI->lang->line('cashups_note')),
-		array('closed_amount_due' => $CI->lang->line('cashups_closed_amount_due')),
-		array('closed_amount_card' => $CI->lang->line('cashups_closed_amount_card')),
-		array('closed_amount_check' => $CI->lang->line('cashups_closed_amount_check')),
-		array('closed_amount_total' => $CI->lang->line('cashups_closed_amount_total'))
+		array('total_trx_amount' => $CI->lang->line('cashups_total_trx_amount')),
+		array('total_expense' => $CI->lang->line('cashups_total_expense')),
+		array('closed_amount_total' => $CI->lang->line('cashups_closed_amount_total')),
+		array('expected_cash' => $CI->lang->line('cashups_expected_cash')),
+		array('actual_cash_counted' => $CI->lang->line('cashups_actual_cash_counted')),
+		array('discrepancy_variance' => $CI->lang->line('cashups_discrepancy_variance')),
+		array('note' => $CI->lang->line('cashups_note'))
 	);
 
 	return transform_headers($headers);
@@ -778,20 +782,24 @@ function get_cash_up_data_row($cash_up)
 
 	$controller_name = strtolower(get_class($CI));
 
-	return array (
+	return array(
 		'cashup_id' => $cash_up->cashup_id,
 		'open_date' => to_datetime(strtotime($cash_up->open_date)),
 		'open_employee_id' => $cash_up->open_first_name . ' ' . $cash_up->open_last_name,
 		'open_amount_cash' => to_currency($cash_up->open_amount_cash),
-		'transfer_amount_cash' => to_currency($cash_up->transfer_amount_cash),
+		'cash_in_amount' => to_currency($cash_up->cash_in_amount),
+		'cash_out_amount' => to_currency($cash_up->cash_out_amount),
+		'cash_in_type' => $cash_up->cash_in_type,
+		'cash_out_type' => $cash_up->cash_out_type,
 		'close_date' => to_datetime(strtotime($cash_up->close_date)),
 		'close_employee_id' => $cash_up->close_first_name . ' ' . $cash_up->close_last_name,
-		'closed_amount_cash' => to_currency($cash_up->closed_amount_cash),
-		'note' => $cash_up->note ? '<span class="glyphicon glyphicon-ok"></span>' : '<span class="glyphicon glyphicon-remove"></span>',
-		'closed_amount_due' => to_currency($cash_up->closed_amount_due),
-		'closed_amount_card' => to_currency($cash_up->closed_amount_card),
-		'closed_amount_check' => to_currency($cash_up->closed_amount_check),
+		'total_trx_amount' => to_currency($cash_up->total_trx_amount),
+		'total_expense' => to_currency($cash_up->total_expense),
 		'closed_amount_total' => to_currency($cash_up->closed_amount_total),
+		'expected_cash' => to_currency($cash_up->expected_cash),
+		'actual_cash_counted' => to_currency($cash_up->actual_cash_counted),
+		'discrepancy_variance' => to_currency($cash_up->discrepancy_variance),
+		'note' => $cash_up->description,
 		'edit' => anchor($controller_name."/view/$cash_up->cashup_id", '<span class="glyphicon glyphicon-edit"></span>',
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update'))
 		)

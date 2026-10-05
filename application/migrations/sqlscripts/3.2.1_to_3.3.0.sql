@@ -103,16 +103,18 @@ CREATE TABLE IF NOT EXISTS ospos_cash_up (
     close_date TIMESTAMP NULL,
     open_amount_cash DECIMAL(15,2) NOT NULL,
     transfer_amount_cash DECIMAL(15,2) NOT NULL,
-    note INTEGER NOT NULL,
+    note INTEGER NOT NULL DEFAULT 0,
     closed_amount_cash DECIMAL(15,2) NOT NULL,
     closed_amount_card DECIMAL(15,2) NOT NULL,
     closed_amount_check DECIMAL(15,2) NOT NULL,
     closed_amount_total DECIMAL(15,2) NOT NULL,
     description VARCHAR(255) NOT NULL,
     open_employee_id INTEGER NOT NULL,
-    close_employee_id INTEGER NOT NULL,
+    close_employee_id INTEGER,
     deleted INTEGER NOT NULL DEFAULT 0,
     closed_amount_due DECIMAL(15,2) NOT NULL,
+    closed_amount_mpesa DECIMAL(15,2) NOT NULL DEFAULT 0,
+    expected_cash DECIMAL(15,2) NOT NULL DEFAULT 0,
     PRIMARY KEY (cashup_id)
 );
 
