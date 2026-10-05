@@ -186,6 +186,11 @@ label.required
 	{
 		width: 750px;
 	}
+
+	.modal-dlg-cashup .modal-dialog
+	{
+		width: 900px;
+	}
 }
 
 .modal-body

@@ -69,7 +69,7 @@ $(document).ready(function()
 						dialog_ref.close();
 					}
 				}],
-				cssClass: 'modal-dlg'
+				cssClass: 'modal-dlg-cashup'
 			});
 		});
 	});
@@ -82,7 +82,7 @@ $(document).ready(function()
 	<button onclick="javascript:printdoc()" class='btn btn-info btn-sm pull-right'>
 		<span class="glyphicon glyphicon-print">&nbsp;</span><?php echo $this->lang->line('common_print'); ?>
 	</button>
-	<button id="new_cashup_btn" class='btn btn-info btn-sm pull-right modal-dlg' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/view"); ?>'
+	<button id="new_cashup_btn" class='btn btn-info btn-sm pull-right modal-dlg-cashup' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/view"); ?>'
 			title='<?php echo $this->lang->line($controller_name.'_new'); ?>'>
 		<span class="glyphicon glyphicon-tags">&nbsp</span><?php echo $this->lang->line($controller_name . '_new'); ?>
 	</button>

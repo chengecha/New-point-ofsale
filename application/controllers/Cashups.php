@@ -313,11 +313,12 @@ class Cashups extends Secure_Controller
 		$open_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $open_date);
 
 		$close_date = $this->input->post('close_date');
-		$close_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $close_date);
+		$close_date_formatter = $close_date ? date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $close_date) : false;
+		$formatted_close_date = $close_date_formatter ? $close_date_formatter->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
 
 		$cash_up_data = array(
 			'open_date' => $open_date_formatter->format('Y-m-d H:i:s'),
-			'close_date' => $close_date_formatter->format('Y-m-d H:i:s'),
+			'close_date' => $formatted_close_date,
 			'open_amount_cash' => $this->input->post('open_amount_cash') == '' ? 0 : parse_decimals($this->input->post('open_amount_cash')),
 			'cash_in_amount' => $this->input->post('cash_in_amount') == '' ? 0 : parse_decimals($this->input->post('cash_in_amount')),
 			'cash_in_type' => $this->input->post('cash_in_type'),
@@ -336,6 +337,7 @@ class Cashups extends Secure_Controller
 			'expected_cash' => $this->input->post('expected_cash') == '' ? 0 : parse_decimals($this->input->post('expected_cash')),
 			'closed_amount_total' => $this->input->post('closed_amount_total') == '' ? 0 : parse_decimals($this->input->post('closed_amount_total')),
 			'description' => $this->input->post('description'),
+			'note' => $this->input->post('note') !== NULL ? $this->input->post('note') : '',
 			'open_employee_id' => $this->input->post('open_employee_id'),
 			'close_employee_id' => $this->input->post('close_employee_id'),
 			'deleted' => $this->input->post('deleted') != NULL
