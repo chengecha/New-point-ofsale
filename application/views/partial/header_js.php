@@ -53,4 +53,34 @@
 	$(function() {
 		$('.navbar').addClass('navbar-shown');
 	});
+
+	$(function()
+	{
+		var $toggleTopbar = $('#toggle_topbar');
+		var $showTopbarBtn = $('#show_topbarBtn');
+
+		if ($toggleTopbar.length > 0)
+		{
+			if (localStorage.getItem('hide_topbar') === 'true')
+			{
+				$('body').addClass('topbar-hidden');
+				$showTopbarBtn.show();
+			}
+
+			$toggleTopbar.on('click', function()
+			{
+				$('body').toggleClass('topbar-hidden');
+				var hidden = $('body').hasClass('topbar-hidden');
+				localStorage.setItem('hide_topbar', hidden);
+				$showTopbarBtn.toggle(hidden);
+			});
+
+			$showTopbarBtn.on('click', function()
+			{
+				$('body').removeClass('topbar-hidden');
+				localStorage.setItem('hide_topbar', 'false');
+				$showTopbarBtn.hide();
+			});
+		}
+	});
 </script>

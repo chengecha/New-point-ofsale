@@ -255,6 +255,7 @@ class Receivings extends Secure_Controller
 		else
 		{
 			$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['receiving_id']);
+		$data['qrcode'] = $this->barcode_lib->generate_receipt_qrcode_data($data);
 			json_log('receiving_completed', ['receiving_id' => $data['receiving_id'], 'total' => $data['total']]);
 		}
 
@@ -299,6 +300,7 @@ class Receivings extends Secure_Controller
 		$data['reference'] = $this->receiving_lib->get_reference();
 		$data['receiving_id'] = 'RECV ' . $receiving_id;
 		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['receiving_id']);
+		$data['qrcode'] = $this->barcode_lib->generate_receipt_qrcode_data($data);
 		$employee_info = $this->Employee->get_info($receiving_info['employee_id']);
 		$data['employee'] = $employee_info->first_name . ' ' . $employee_info->last_name;
 

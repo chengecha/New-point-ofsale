@@ -254,3 +254,31 @@ label.required
 {
 	opacity: 1;
 }
+
+/* Hide topbar and navbar when toggled (sales and home modules only) */
+body.topbar-hidden .topbar,
+body.topbar-hidden .navbar {
+	display: none;
+}
+
+/* Push content down when topbar is hidden, below the floating show button */
+body.topbar-hidden .wrapper {
+	margin-top: 35px;
+}
+
+/* Reduce left/right padding for sales and home modules to use more screen width */
+.module-sales .wrapper > .container,
+.module-home .wrapper > .container {
+	padding-left: 20px;
+	padding-right: 20px;
+	max-width: 100%;
+	width: 100%;
+}
+
+/* Widen register content area on sales module */
+.module-sales #register_wrapper {
+	width: 73%;
+}
+.module-sales #overall_sale {
+	width: 26%;
+}

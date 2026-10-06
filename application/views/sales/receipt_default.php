@@ -225,7 +225,7 @@
 	</div>
 
 	<div id="barcode">
-		<img src='data:image/png;base64,<?php echo $barcode; ?>' /><br>
+		<img src='data:image/png;base64,<?php echo $qrcode; ?>' /><br>
 		<?php echo $sale_id; ?>
 	</div>
 </div>

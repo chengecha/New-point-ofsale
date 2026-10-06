@@ -788,6 +788,7 @@ class Sales extends Secure_Controller
 				else
 				{
 					$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+				$data['qrcode'] = $this->barcode_lib->generate_receipt_qrcode_data($data);
 					json_log('sale_completed', ['sale_id' => $data['sale_id_num'], 'sale_type' => 'invoice', 'total' => $data['total'], 'payments_total' => $data['payments_total']]);
 					$this->load->view('sales/'.$invoice_view, $data);
 					$this->sale_lib->clear_all();
@@ -895,6 +896,7 @@ class Sales extends Secure_Controller
 			else
 			{
 				$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+				$data['qrcode'] = $this->barcode_lib->generate_receipt_qrcode_data($data);
 				json_log('sale_completed', ['sale_id' => $data['sale_id_num'], 'sale_type' => 'pos', 'total' => $data['total'], 'payments_total' => $data['payments_total']]);
 				$this->load->view('sales/receipt', $data);
 				$this->sale_lib->clear_all();
@@ -953,6 +955,7 @@ class Sales extends Secure_Controller
 		if(!empty($sale_data['customer_email']))
 		{
 			$sale_data['barcode'] = $this->barcode_lib->generate_receipt_barcode($sale_data['sale_id']);
+			$sale_data['qrcode'] = $this->barcode_lib->generate_receipt_qrcode_data($sale_data);
 
 			$to = $sale_data['customer_email'];
 			$subject = $this->lang->line('sales_receipt');
@@ -996,6 +999,7 @@ class Sales extends Secure_Controller
 		if ($type === 'receipt') {
 			$subject = $this->lang->line('sales_receipt');
 			$sale_data['barcode'] = $this->barcode_lib->generate_receipt_barcode($sale_data['sale_id']);
+			$sale_data['qrcode'] = $this->barcode_lib->generate_receipt_qrcode_data($sale_data);
 		} elseif (in_array($type, array('invoice', 'tax_invoice'))) {
 			$number = $sale_data['invoice_number'];
 			$subject = $this->lang->line('sales_invoice') . ' ' . $number;
@@ -1253,6 +1257,7 @@ class Sales extends Secure_Controller
 		}
 
 		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+				$data['qrcode'] = $this->barcode_lib->generate_receipt_qrcode_data($data);
 		$data['print_after_sale'] = FALSE;
 		$data['price_work_orders'] = FALSE;
 

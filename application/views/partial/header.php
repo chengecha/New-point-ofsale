@@ -106,10 +106,38 @@
 		.navbar-close-btn {
 			display: none !important;
 		}
+
+		/* Hide topbar and navbar when toggled (sales and home modules only) */
+		body.topbar-hidden .topbar,
+		body.topbar-hidden .navbar {
+			display: none;
+		}
+
+		/* Push content down when topbar is hidden, below the floating show button */
+		body.topbar-hidden .wrapper {
+			margin-top: 35px;
+		}
+
+		/* Reduce left/right padding for sales and home modules to use more screen width */
+		.module-sales .wrapper > .container,
+		.module-home .wrapper > .container {
+			padding-left: 20px !important;
+			padding-right: 20px !important;
+			max-width: 100% !important;
+			width: 100% !important;
+		}
+
+		/* Widen register content area on sales module */
+		.module-sales #register_wrapper {
+			width: 73% !important;
+		}
+		.module-sales #overall_sale {
+			width: 26% !important;
+		}
 	</style>
 </head>
 
-<body>
+<body class="module-<?php echo $this->uri->segment(1); ?>">
 	<div class="wrapper">
 		<div class="topbar">
 			<div class="container">
@@ -121,6 +149,12 @@
 					<?php echo anchor('home/change_password/'.$user_info->person_id, $user_info->first_name . ' ' . $user_info->last_name, array('class' => 'modal-dlg', 'data-btn-submit' => $this->lang->line('common_submit'), 'title' => $this->lang->line('employees_change_password'))); ?>
 					<?php echo '  |  ' . ($this->input->get('debug') == 'true' ? $this->session->userdata('session_sha1') . '  |  ' : ''); ?>
 					<?php echo anchor('home/logout', $this->lang->line('login_logout')); ?>
+					<?php if (in_array($this->uri->segment(1), ['sales', 'home'])): ?>
+						<span style="color: #eee; vertical-align: middle; padding-left: 8px;">|</span>
+						<button type="button" id="toggle_topbar" class="btn btn-xs" style="background: transparent; border: none; color: #eee; vertical-align: middle; padding: 2px 5px;" title="Hide menu bar">
+							<span class="glyphicon glyphicon-menu-up"></span>
+						</button>
+					<?php endif; ?>
 				</div>
 
 				<div class="navbar-center" style="text-align:center">
@@ -162,5 +196,11 @@
 			</div>
 		</div>
 
-		<div class="container">
+	<?php if (in_array($this->uri->segment(1), ['sales', 'home'])): ?>
+	<div id="show_topbarBtn" class="btn btn-sm" style="position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 1050; background: #182735; border: none; color: #fff; padding: 5px 12px; border-radius: 0; display: none;">
+		<span class="glyphicon glyphicon-menu-down"></span> Show Menu
+	</div>
+	<?php endif; ?>
+
+	<div class="container">
 			<div class="row">
