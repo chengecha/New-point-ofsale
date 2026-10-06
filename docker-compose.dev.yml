@@ -24,7 +24,7 @@ services:
           - POSTGRES_PASSWORD=pointofsale
           - POSTGRES_DB_NAME=ospos
           - POSTGRES_HOST_NAME=postgres
-          - XDEBUG_CONFIG=remote_host=172.17.0.1
+          - XDEBUG_CONFIG=client_host=172.17.0.1
 
     postgres:
         image: postgres:13
