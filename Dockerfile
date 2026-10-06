@@ -22,7 +22,7 @@ COPY . /app
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install -d/app --no-dev --optimize-autoloader
 RUN ln -s /app/*[^public] /var/www && rm -rf /var/www/html && ln -nsf /app/public /var/www/html
-RUN chmod -R 750 /app/public/uploads /app/application/logs && chown -R www-data:www-data /app/public /app/application
+RUN mkdir -p /app/public/uploads /app/application/logs && chmod -R 750 /app/public/uploads /app/application/logs && chown -R www-data:www-data /app/public /app/application
 
 FROM fluxwave AS fluxwave_test
  
