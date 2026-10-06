@@ -1,3 +1,16 @@
+FROM node:16 AS frontend
+RUN git config --global url."https://github.com/".insteadOf git://github.com/
+WORKDIR /build
+COPY package.json bower.json Gruntfile.js .bowerrc ./
+COPY LICENSE ./
+COPY application/ ./application/
+COPY database/ ./database/
+COPY public/ ./public/
+RUN npm install --legacy-peer-deps && npm install -g bower \
+    && bower --allow-roots install \
+    && sed -i 's/root\.chartist/root.Chartist/g; s/root\.jquery/root.jQuery/g' public/bower_components/chartist-plugin-tooltip/chartist-plugin-tooltip.js \
+    && npx grunt default
+
 FROM php:7.4-apache AS fluxwave
 MAINTAINER jekkos
 
@@ -8,8 +21,8 @@ RUN echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources
         libgd-dev \
         libpq-dev \
         libzip-dev \
-        unzip \
         openssl \
+        unzip \
     && rm -rf /var/lib/apt/lists/*
 
 
@@ -19,10 +32,12 @@ RUN echo "date.timezone = \"\${PHP_TIMEZONE}\"" > /usr/local/etc/php/conf.d/time
 
 WORKDIR /app
 COPY . /app
+COPY --from=frontend /build/public/dist /app/public/dist
+COPY --from=frontend /build/public/bower_components /app/public/bower_components
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install -d/app --no-dev --optimize-autoloader
 RUN ln -s /app/*[^public] /var/www && rm -rf /var/www/html && ln -nsf /app/public /var/www/html
-RUN mkdir -p /app/public/uploads /app/application/logs && chmod -R 750 /app/public/uploads /app/application/logs && chown -R www-data:www-data /app/public /app/application
+RUN mkdir -p /app/public/uploads/item_pics /app/application/logs && chmod -R 750 /app/public/uploads /app/application/logs && chown -R www-data:www-data /app/public /app/application
 
 FROM fluxwave AS fluxwave_test
  
@@ -44,8 +59,7 @@ CMD ["/app/vendor/phpunit/phpunit/phpunit"]
 FROM fluxwave AS fluxwave_dev
 
 RUN mkdir -p /app/bower_components && ln -s /app/bower_components /var/www/html/bower_components
-RUN pecl channel-update pecl.php.net && yes | pecl install xdebug \
+RUN yes | pecl install xdebug-3.1.6 \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.start_with_requests=trigger" >> /usr/local/etc/php/conf.d/xdebug.ini
-
+    && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini

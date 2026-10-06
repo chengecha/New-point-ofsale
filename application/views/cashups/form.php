@@ -249,7 +249,7 @@
 	<?php if(!empty($cash_ups_info->cashup_id)): ?>
 	<div class="form-group form-group-sm" id="close_fields_section">
 		<?php if(empty($cash_ups_info->closed_amount_total)): ?>
-		<div class='col-xs-2 col-xs-offset-3'>
+		<div class='col-xs-2 col-xs-offset-3' style="padding-top: 5px;">
 			<?php echo form_button(array(
 				'name' => 'initiate_close_btn',
 				'id' => 'initiate_close_btn',
@@ -263,29 +263,34 @@
 				'id'=>'close_day',
 				'value'=>1,
 				'checked'=>0,
+				'disabled'=>TRUE,
 				'style'=>'margin-left: 10px;'
 			)); ?>
 			<?php echo form_label($this->lang->line('cashups_close_day'), 'close_day', array('class'=>'control-label')); ?>
 		</div>
+		<div class="clearfix"></div>
 		<?php endif; ?>
-		<div class='col-xs-3 close_fields_inner' style="display:<?php echo !empty($cash_ups_info->cashup_id) && empty($cash_ups_info->closed_amount_total) ? 'none' : 'block'; ?>;">
-			<?php echo form_label($this->lang->line('cashups_close_date'), 'close_date', array('class'=>'required control-label')); ?>
-			<?php echo form_input(array(
-					'name'=>'close_date',
-					'id'=>'close_date',
-					'class'=>'form-control input-sm datepicker',
-					'value'=>to_datetime(strtotime($cash_ups_info->close_date)),
-					'readonly'=>'true'
-					));?>
+		<div class="close_fields_inner">
+			<?php echo form_label($this->lang->line('cashups_close_date'), 'close_date', array('class'=>'control-label col-xs-3')); ?>
+			<div class='col-xs-6'>
+				<?php echo form_input(array(
+						'name'=>'close_date',
+						'id'=>'close_date',
+						'class'=>'form-control input-sm datepicker',
+						'value'=>to_datetime(strtotime($cash_ups_info->close_date)),
+						'readonly'=>'true',
+						'style'=>'width: 200px;'
+						));?>
+			</div>
 		</div>
 	</div>
 
-	<div class="form-group form-group-sm" id="close_employee_section" style="display:<?php echo !empty($cash_ups_info->cashup_id) && empty($cash_ups_info->closed_amount_total) ? 'none' : 'block'; ?>;">
-		<div class='col-xs-3 col-xs-offset-3'>
-			<?php echo form_label($this->lang->line('cashups_close_employee'), 'close_employee', array('class'=>'control-label')); ?>
-		</div>
-		<div class='col-xs-3'>
-			<?php echo form_dropdown('close_employee_id', $employees, $cash_ups_info->close_employee_id, 'id="close_employee_id" class="form-control"');?>
+	<div class="form-group form-group-sm" id="close_employee_section">
+		<?php echo form_label($this->lang->line('cashups_close_employee'), 'close_employee', array('class'=>'control-label col-xs-3')); ?>
+		<div class='col-xs-6'>
+			<?php
+			$emp_attrs = !empty($cash_ups_info->closed_amount_total) ? 'id="close_employee_id" class="form-control"' : 'id="close_employee_id" class="form-control" readonly';
+			echo form_dropdown('close_employee_id', $employees, $cash_ups_info->close_employee_id, $emp_attrs);?>
 		</div>
 	</div>
 	<?php endif; ?>
@@ -475,7 +480,9 @@ $(document).ready(function()
 					$('#closed_amount_total').val(response.closed_amount_total);
 					$('#expected_cash').val(response.expected_cash);
 					$('#initiate_close_btn').hide();
+					$('#close_day').prop('disabled', true);
 					$('#close_fields_section .close_fields_inner, #close_employee_section').show();
+					$('#close_date, #close_employee_id').prop('readonly', false);
 					recalculate_totals();
 				}
 			},
@@ -483,9 +490,29 @@ $(document).ready(function()
 		);
 	});
 
+	// Enable Close Day checkbox when open_amount and cash_in have values
+	$(document).on('keyup', '#open_amount_cash, .cash_in_amount', function() {
+		enable_close_checkbox();
+	});
+
+	var enable_close_checkbox = function() {
+		var open_amount = parseFloat($('#open_amount_cash').val().replace(/[^\d.\-]/g, '')) || 0;
+		var cash_in_total = 0;
+		$('.cash_in_amount').each(function() {
+			cash_in_total += parseFloat($(this).val().replace(/[^\d.\-]/g, '')) || 0;
+		});
+
+		if(open_amount > 0 && cash_in_total > 0) {
+			$('#close_day').prop('disabled', false);
+		} else {
+			$('#close_day').prop('disabled', true).prop('checked', false);
+		}
+	};
+
 	// Close Day checkbox - triggers close process when checked
 	$('#close_day').change(function() {
 		if($(this).is(':checked')) {
+			$('#close_date').rules('add', 'required', true);
 			var cashup_id = $('#cashup_id').text().trim().match(/\d+/)[0];
 			$.post("<?php echo site_url($controller_name . '/initiate_close')?>", {
 					'cashup_id': cashup_id
@@ -502,6 +529,7 @@ $(document).ready(function()
 						$('#expected_cash').val(response.expected_cash);
 						$('#initiate_close_btn').hide();
 						$('#close_fields_section .close_fields_inner, #close_employee_section').show();
+						$('#close_date, #close_employee_id').prop('readonly', false);
 						recalculate_totals();
 
 						// Validate notes if variance is negative and close day is checked
@@ -518,6 +546,8 @@ $(document).ready(function()
 				},
 				'json'
 			);
+		} else {
+			$('#close_date').rules('remove', 'required');
 		}
 	});
 
@@ -546,10 +576,6 @@ $(document).ready(function()
 			open_date:
 			{
 				required: true
-			},
-			close_date:
-			{
-				required: true
 			}
 		},
 		messages:
@@ -576,7 +602,7 @@ $(document).ready(function()
 			}
 		}
 	}, form_support.error));
-		$.validator.addMethod('notes_required_if_negative', function(value, element) {
+	$.validator.addMethod('notes_required_if_negative', function(value, element) {
 		var discrepancy = parseFloat($('#discrepancy_variance').val().replace(/[^0-9.\-]/g, ''));
 		if($('#close_day').is(':checked') && discrepancy < 0) {
 			return value.trim().length > 0;
@@ -584,5 +610,11 @@ $(document).ready(function()
 		return true;
 	}, '<?php echo $this->lang->line('cashups_notes_required_if_negative'); ?>');
 	$('#description').rules('add', 'notes_required_if_negative', true);
+
+	// Initial state
+	enable_close_checkbox();
+	<?php if(!empty($cash_ups_info->closed_amount_total)): ?>
+	$('#close_date').rules('add', 'required', true);
+	<?php endif; ?>
 });
 </script>
