@@ -7,12 +7,14 @@ RUN echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources
         libicu-dev \
         libgd-dev \
         libpq-dev \
+        libzip-dev \
+        unzip \
         openssl \
     && rm -rf /var/lib/apt/lists/*
 
 
 RUN a2enmod rewrite
-RUN docker-php-ext-install pdo pdo_pgsql pgsql bcmath intl gd
+RUN docker-php-ext-install pdo pdo_pgsql pgsql bcmath intl gd zip
 RUN echo "date.timezone = \"\${PHP_TIMEZONE}\"" > /usr/local/etc/php/conf.d/timezone.ini
 
 WORKDIR /app
