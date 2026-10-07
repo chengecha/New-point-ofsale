@@ -3,324 +3,340 @@
 <ul id="error_message_box" class="error_message_box"></ul>
 
 <?php echo form_open('cashups/save/'.$cash_ups_info->cashup_id, array('id'=>'cashups_edit_form', 'class'=>'form-horizontal')); ?>
-	<fieldset id="item_basic_info">
-		<?php echo form_hidden('closed_amount_cash', $cash_ups_info->closed_amount_cash); ?>
-		<?php echo form_hidden('closed_amount_mpesa', $cash_ups_info->closed_amount_mpesa); ?>
-		<?php echo form_hidden('closed_amount_due', $cash_ups_info->closed_amount_due); ?>
-		<?php echo form_hidden('closed_amount_card', $cash_ups_info->closed_amount_card); ?>
-		<?php echo form_hidden('closed_amount_check', $cash_ups_info->closed_amount_check); ?>
-		<?php echo form_hidden('transfer_amount_cash', $cash_ups_info->transfer_amount_cash); ?>
-
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_info'), 'cash_ups_info', array('class'=>'control-label col-xs-3')); ?>
-			<?php echo form_label(!empty($cash_ups_info->cashup_id) ? $this->lang->line('cashups_id') . ' ' . $cash_ups_info->cashup_id : '', 'cashup_id', array('class'=>'control-label col-xs-8', 'style'=>'text-align:left')); ?>
-		</div>
-
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_open_date'), 'open_date', array('class'=>'required control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group">
-					<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
-					<?php echo form_input(array(
-							'name'=>'open_date',
-							'id'=>'open_date',
-							'class'=>'form-control input-sm datepicker',
-							'value'=>to_datetime(strtotime($cash_ups_info->open_date)))
-							);?>
-				</div>
-			</div>
-		</div>
-
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_open_employee'), 'open_employee', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<?php echo form_dropdown('open_employee_id', $employees, $cash_ups_info->open_employee_id, 'id="open_employee_id" class="form-control"');?>
-			</div>
-		</div>
-
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_open_amount_cash'), 'open_amount_cash', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group input-group-sm">
-					<?php if (!currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
-					<?php echo form_input(array(
-							'name'=>'open_amount_cash',
-							'id'=>'open_amount_cash',
-							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($cash_ups_info->open_amount_cash))
-							);?>
-					<?php if (currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
-				</div>
-			</div>
-		</div>
+<style>
+#item_basic_info .control-label { white-space: nowrap; }
+</style>
+	<?php echo form_hidden('closed_amount_cash', $cash_ups_info->closed_amount_cash); ?>
+	<?php echo form_hidden('closed_amount_mpesa', $cash_ups_info->closed_amount_mpesa); ?>
+	<?php echo form_hidden('closed_amount_due', $cash_ups_info->closed_amount_due); ?>
+	<?php echo form_hidden('closed_amount_card', $cash_ups_info->closed_amount_card); ?>
+	<?php echo form_hidden('closed_amount_check', $cash_ups_info->closed_amount_check); ?>
+	<?php echo form_hidden('transfer_amount_cash', $cash_ups_info->transfer_amount_cash); ?>
 
 	<?php echo form_input(array('name'=>'cash_in_amount', 'id'=>'cash_in_amount', 'value'=>$cash_ups_info->cash_in_amount, 'type'=>'hidden')); ?>
 	<?php echo form_input(array('name'=>'cash_in_type', 'id'=>'cash_in_type', 'value'=>$cash_ups_info->cash_in_type, 'type'=>'hidden')); ?>
 	<?php echo form_input(array('name'=>'cash_out_amount', 'id'=>'cash_out_amount', 'value'=>$cash_ups_info->cash_out_amount, 'type'=>'hidden')); ?>
 	<?php echo form_input(array('name'=>'cash_out_type', 'id'=>'cash_out_type', 'value'=>$cash_ups_info->cash_out_type, 'type'=>'hidden')); ?>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_cash_in_amount'), 'cash_in_entries', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div id="cash_in_entries" style="margin-bottom: 5px;">
-					<div class="input-group input-group-sm cash_in_row" style="margin-bottom: 5px;">
+	<fieldset id="item_basic_info">
+
+		<?php $logged_in_employee = $this->Employee->get_logged_in_employee_info(); ?>
+		<div class="form-group form-group-sm cashup-full-row">
+			<?php echo form_label($this->lang->line('cashups_info'), 'cash_ups_info', array('class'=>'control-label col-xs-3')); ?>
+			<div class='col-xs-9'>
+				<?php echo form_label(': ' . $logged_in_employee->first_name . ' ' . $logged_in_employee->last_name, 'cash_ups_info_user', array('class'=>'control-label', 'style'=>'text-align:left')); ?>
+			</div>
+		</div>
+		<br>
+
+		<div class="cashup-columns clearfix">
+
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_open_date'), 'open_date', array('class'=>'required control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div class="input-group">
+						<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
+						<?php echo form_input(array(
+								'name'=>'open_date',
+								'id'=>'open_date',
+								'class'=>'form-control input-sm datepicker',
+								'value'=>to_datetime(strtotime($cash_ups_info->open_date)))
+								);?>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_open_employee'), 'open_employee_id', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<?php echo form_dropdown('open_employee_id', $employees, $cash_ups_info->open_employee_id, 'id="open_employee_id" class="form-control"');?>
+				</div>
+			</div>
+
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_open_amount_cash'), 'open_amount_cash', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div class="input-group input-group-sm">
 						<?php if (!currency_side()): ?>
 							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
 						<?php endif; ?>
 						<?php echo form_input(array(
-								'name'=>'cash_in_amount_1',
-								'class'=>'form-control input-sm cash_in_amount',
-								'style'=>'width: 120px;',
-								'value'=>to_currency_no_money($cash_ups_info->cash_in_amount))
+								'name'=>'open_amount_cash',
+								'id'=>'open_amount_cash',
+								'class'=>'form-control input-sm',
+								'value'=>to_currency_no_money($cash_ups_info->open_amount_cash))
 								);?>
 						<?php if (currency_side()): ?>
 							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
 						<?php endif; ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->lang->line('cashups_cash_in_type'); ?></b></span>
-						<?php echo form_dropdown('cash_in_type_1', $payment_types, $cash_ups_info->cash_in_type, 'class="form-control input-sm cash_in_type" style="width: 100px;"');?>
-						<span class="input-group-btn">
-							<button type="button" class="btn btn-info btn-sm cash_in_add" title="<?php echo $this->lang->line('common_add'); ?>">
-								<span class="glyphicon glyphicon-plus"></span>
-							</button>
-						</span>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_cash_out_amount'), 'cash_out_entries', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div id="cash_out_entries" style="margin-bottom: 5px;">
-					<div class="input-group input-group-sm cash_out_row" style="margin-bottom: 5px;">
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_closed_amount_total'), 'closed_amount_total', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div class="input-group input-group-sm">
 						<?php if (!currency_side()): ?>
 							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
 						<?php endif; ?>
 						<?php echo form_input(array(
-								'name'=>'cash_out_amount_1',
-								'class'=>'form-control input-sm cash_out_amount',
-								'style'=>'width: 120px;',
-								'value'=>to_currency_no_money($cash_ups_info->cash_out_amount))
+								'name'=>'closed_amount_total',
+								'id'=>'closed_amount_total',
+								'readonly'=>'true',
+								'class'=>'form-control input-sm',
+								'value'=>to_currency_no_money($cash_ups_info->closed_amount_total)
+								));?>
+						<?php if (currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group form-group-sm cashup-full-row">
+				<?php echo form_label($this->lang->line('cashups_cash_in_amount'), 'cash_in_entries', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div id="cash_in_entries" style="margin-bottom: 5px;">
+						<div class="input-group input-group-sm cash_in_row" style="margin-bottom: 5px;">
+							<?php if (!currency_side()): ?>
+								<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+							<?php endif; ?>
+							<?php echo form_input(array(
+									'name'=>'cash_in_amount_1',
+									'id'=>'cash_in_amount_1',
+									'class'=>'form-control input-sm cash_in_amount',
+									'value'=>to_currency_no_money($cash_ups_info->cash_in_amount))
+									);?>
+							<?php if (currency_side()): ?>
+								<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+							<?php endif; ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->lang->line('cashups_cash_in_type'); ?></b></span>
+							<?php echo form_dropdown('cash_in_type_1', $payment_types, $cash_ups_info->cash_in_type, 'id="cash_in_type_1" class="form-control input-sm cash_in_type" style="width: 100px;"');?>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-info btn-sm cash_in_add" title="<?php echo $this->lang->line('common_add'); ?>">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+<br>
+			<div class="form-group form-group-sm cashup-full-row">
+				<?php echo form_label($this->lang->line('cashups_cash_out_amount'), 'cash_out_entries', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div id="cash_out_entries" style="margin-bottom: 5px;">
+						<div class="input-group input-group-sm cash_out_row" style="margin-bottom: 5px;">
+							<?php if (!currency_side()): ?>
+								<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+							<?php endif; ?>
+							<?php echo form_input(array(
+									'name'=>'cash_out_amount_1',
+									'id'=>'cash_out_amount_1',
+									'class'=>'form-control input-sm cash_out_amount',
+									'value'=>to_currency_no_money($cash_ups_info->cash_out_amount))
+									);?>
+							<?php if (currency_side()): ?>
+								<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+							<?php endif; ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->lang->line('cashups_cash_out_type'); ?></b></span>
+							<?php echo form_dropdown('cash_out_type_1', $payment_types, $cash_ups_info->cash_out_type, 'id="cash_out_type_1" class="form-control input-sm cash_out_type" style="width: 100px;"');?>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-info btn-sm cash_out_add" title="<?php echo $this->lang->line('common_add'); ?>">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+<br>
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_total_trx_amount'), 'total_trx_amount', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div class="input-group input-group-sm">
+						<?php if (!currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+						<?php echo form_input(array(
+								'name'=>'total_trx_amount',
+								'id'=>'total_trx_amount',
+								'readonly'=>'true',
+								'class'=>'form-control input-sm',
+								'value'=>to_currency_no_money($cash_ups_info->total_trx_amount))
 								);?>
 						<?php if (currency_side()): ?>
 							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
 						<?php endif; ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->lang->line('cashups_cash_out_type'); ?></b></span>
-						<?php echo form_dropdown('cash_out_type_1', $payment_types, $cash_ups_info->cash_out_type, 'class="form-control input-sm cash_out_type" style="width: 100px;"');?>
-						<span class="input-group-btn">
-							<button type="button" class="btn btn-info btn-sm cash_out_add" title="<?php echo $this->lang->line('common_add'); ?>">
-								<span class="glyphicon glyphicon-plus"></span>
-							</button>
-						</span>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_total_expense'), 'total_expense', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group input-group-sm">
-					<?php if (!currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
-					<?php echo form_input(array(
-							'name'=>'total_expense',
-							'id'=>'total_expense',
-							'readonly'=>'true',
-							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($cash_ups_info->total_expense))
-							);?>
-					<?php if (currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_expected_cash'), 'expected_cash', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div class="input-group input-group-sm">
+						<?php if (!currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+						<?php echo form_input(array(
+								'name'=>'expected_cash',
+								'id'=>'expected_cash',
+								'readonly'=>'true',
+								'class'=>'form-control input-sm',
+								'value'=>to_currency_no_money($cash_ups_info->expected_cash))
+								);?>
+						<?php if (currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_total_trx_amount'), 'total_trx_amount', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group input-group-sm">
-					<?php if (!currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
-					<?php echo form_input(array(
-							'name'=>'total_trx_amount',
-							'id'=>'total_trx_amount',
-							'readonly'=>'true',
-							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($cash_ups_info->total_trx_amount))
-							);?>
-					<?php if (currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_total_expense'), 'total_expense', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div class="input-group input-group-sm">
+						<?php if (!currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+						<?php echo form_input(array(
+								'name'=>'total_expense',
+								'id'=>'total_expense',
+								'readonly'=>'true',
+								'class'=>'form-control input-sm',
+								'value'=>to_currency_no_money($cash_ups_info->total_expense))
+								);?>
+						<?php if (currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_closed_amount_total'), 'closed_amount_total', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group input-group-sm">
-					<?php if (!currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
-					<?php echo form_input(array(
-							'name'=>'closed_amount_total',
-							'id'=>'closed_amount_total',
-							'readonly'=>'true',
-							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($cash_ups_info->closed_amount_total)
-							));?>
-					<?php if (currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_actual_cash_counted'), 'actual_cash_counted', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div class="input-group input-group-sm">
+						<?php if (!currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+						<?php echo form_input(array(
+								'name'=>'actual_cash_counted',
+								'id'=>'actual_cash_counted',
+								'class'=>'form-control input-sm',
+								'value'=>to_currency_no_money($cash_ups_info->actual_cash_counted))
+								);?>
+						<?php if (currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_expected_cash'), 'expected_cash', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group input-group-sm">
-					<?php if (!currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
-					<?php echo form_input(array(
-							'name'=>'expected_cash',
-							'id'=>'expected_cash',
-							'readonly'=>'true',
-							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($cash_ups_info->expected_cash))
-							);?>
-					<?php if (currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
+			<?php if(!empty($cash_ups_info->cashup_id) && empty($cash_ups_info->closed_amount_total)): ?>
+			<div class="form-group form-group-sm" id="close_action_section">
+				<div class='col-xs-9 col-xs-offset-3' style="padding-top: 5px;">
+					<?php echo form_button(array(
+						'name' => 'initiate_close_btn',
+						'id' => 'initiate_close_btn',
+						'content' => $this->lang->line('cashups_initiate_close'),
+						'class' => 'btn btn-primary btn-sm'
+					)); ?>
+					<?php echo form_checkbox(array(
+						'name'=>'close_day',
+						'id'=>'close_day',
+						'value'=>1,
+						'checked'=>0,
+						'disabled'=>TRUE,
+						'style'=>'margin-left: 10px;'
+					)); ?>
+					<?php echo form_label($this->lang->line('cashups_close_day'), 'close_day', array('class'=>'control-label')); ?>
+					<div class="clearfix"></div>
 				</div>
 			</div>
-		</div>
+			<?php endif; ?>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_actual_cash_counted'), 'actual_cash_counted', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group input-group-sm">
-					<?php if (!currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
-					<?php echo form_input(array(
-							'name'=>'actual_cash_counted',
-							'id'=>'actual_cash_counted',
-							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($cash_ups_info->actual_cash_counted))
-							);?>
-					<?php if (currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_discrepancy_variance'), 'discrepancy_variance', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<div class="input-group input-group-sm">
+						<?php if (!currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+						<?php echo form_input(array(
+								'name'=>'discrepancy_variance',
+								'id'=>'discrepancy_variance',
+								'readonly'=>'true',
+								'class'=>'form-control input-sm',
+								'value'=>to_currency_no_money($cash_ups_info->discrepancy_variance))
+								);?>
+						<?php if (currency_side()): ?>
+							<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+						<?php endif; ?>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_discrepancy_variance'), 'discrepancy_variance', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group input-group-sm">
-					<?php if (!currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
-					<?php echo form_input(array(
-							'name'=>'discrepancy_variance',
-							'id'=>'discrepancy_variance',
-							'readonly'=>'true',
-							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($cash_ups_info->discrepancy_variance))
-							);?>
-					<?php if (currency_side()): ?>
-						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-					<?php endif; ?>
+			<?php if(!empty($cash_ups_info->cashup_id)): ?>
+			<div class="form-group form-group-sm" id="close_employee_section">
+				<?php echo form_label($this->lang->line('cashups_close_employee'), 'close_employee_id', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<?php
+					$emp_attrs = !empty($cash_ups_info->closed_amount_total) ? 'id="close_employee_id" class="form-control"' : 'id="close_employee_id" class="form-control" readonly';
+					echo form_dropdown('close_employee_id', $employees, $cash_ups_info->close_employee_id, $emp_attrs);?>
 				</div>
 			</div>
-		</div>
+			<?php endif; ?>
 
-	<?php if(!empty($cash_ups_info->cashup_id)): ?>
-	<div class="form-group form-group-sm" id="close_fields_section">
-		<?php if(empty($cash_ups_info->closed_amount_total)): ?>
-		<div class='col-xs-2 col-xs-offset-3' style="padding-top: 5px;">
-			<?php echo form_button(array(
-				'name' => 'initiate_close_btn',
-				'id' => 'initiate_close_btn',
-				'content' => $this->lang->line('cashups_initiate_close'),
-				'class' => 'btn btn-primary btn-sm'
-			)); ?>
-		</div>
-		<div class='col-xs-2' style="padding-top: 5px; padding-left: 10px;">
-			<?php echo form_checkbox(array(
-				'name'=>'close_day',
-				'id'=>'close_day',
-				'value'=>1,
-				'checked'=>0,
-				'disabled'=>TRUE,
-				'style'=>'margin-left: 10px;'
-			)); ?>
-			<?php echo form_label($this->lang->line('cashups_close_day'), 'close_day', array('class'=>'control-label')); ?>
-		</div>
-		<div class="clearfix"></div>
-		<?php endif; ?>
-		<div class="close_fields_inner">
-			<?php echo form_label($this->lang->line('cashups_close_date'), 'close_date', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<?php echo form_input(array(
-						'name'=>'close_date',
-						'id'=>'close_date',
-						'class'=>'form-control input-sm datepicker',
-						'value'=>to_datetime(strtotime($cash_ups_info->close_date)),
-						'readonly'=>'true',
-						'style'=>'width: 200px;'
-						));?>
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('cashups_note'), 'description', array('class'=>'control-label col-xs-3')); ?>
+				<div class='col-xs-9'>
+					<?php echo form_textarea(array(
+						'name'=>'description',
+						'id'=>'description',
+						'class'=>'form-control input-sm',
+						'rows'=>'2',
+						'value'=>$cash_ups_info->description)
+						);?>
+				</div>
 			</div>
-		</div>
-	</div>
 
-	<div class="form-group form-group-sm" id="close_employee_section">
-		<?php echo form_label($this->lang->line('cashups_close_employee'), 'close_employee', array('class'=>'control-label col-xs-3')); ?>
-		<div class='col-xs-6'>
-			<?php
-			$emp_attrs = !empty($cash_ups_info->closed_amount_total) ? 'id="close_employee_id" class="form-control"' : 'id="close_employee_id" class="form-control" readonly';
-			echo form_dropdown('close_employee_id', $employees, $cash_ups_info->close_employee_id, $emp_attrs);?>
-		</div>
-	</div>
-	<?php endif; ?>
+			<?php if(!empty($cash_ups_info->cashup_id)): ?>
+			<div class="form-group form-group-sm cashup-full-row" id="close_fields_section">
+				<div class="close_fields_inner">
+					<?php echo form_label($this->lang->line('cashups_close_date'), 'close_date', array('class'=>'control-label col-xs-3')); ?>
+					<div class='col-xs-9'>
+						<?php echo form_input(array(
+								'name'=>'close_date',
+								'id'=>'close_date',
+								'class'=>'form-control input-sm datepicker',
+								'value'=>to_datetime(strtotime($cash_ups_info->close_date)),
+								'readonly'=>'true'
+								));?>
+					</div>
+				</div>
+			</div>
+			<?php endif; ?>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('cashups_note'), 'description', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<?php echo form_textarea(array(
-					'name'=>'description',
-					'id'=>'description',
-					'class'=>'form-control input-sm',
-					'value'=>$cash_ups_info->description)
-					);?></div>
 		</div>
 
 		<?php
 		if(!empty($cash_ups_info->cashup_id))
 		{
 		?>
-			<div class="form-group form-group-sm">
-				<?php echo form_label($this->lang->line('cashups_is_deleted').':', 'deleted', array('class'=>'control-label col-xs-3')); ?>
-				<div class='col-xs-5'>
-					<?php echo form_checkbox(array(
-						'name'=>'deleted',
-						'id'=>'deleted',
-						'value'=>1,
-						'checked'=>($cash_ups_info->deleted) ? 1 : 0)
-					);?>
-				</div>
+		<div class="form-group form-group-sm cashup-full-row">
+			<?php echo form_label($this->lang->line('cashups_is_deleted').':', 'deleted', array('class'=>'control-label col-xs-3')); ?>
+			<div class='col-xs-5'>
+				<?php echo form_checkbox(array(
+					'name'=>'deleted',
+					'id'=>'deleted',
+					'value'=>1,
+					'checked'=>($cash_ups_info->deleted) ? 1 : 0)
+				);?>
 			</div>
+		</div>
 		<?php
 		}
 		?>
@@ -465,7 +481,7 @@ $(document).ready(function()
 	});
 
 	$('#initiate_close_btn').click(function() {
-		var cashup_id = $('#cashup_id').text().trim().match(/\d+/)[0];
+		var cashup_id = <?php echo json_encode(!empty($cash_ups_info->cashup_id) ? $cash_ups_info->cashup_id : null); ?>;
 		$.post("<?php echo site_url($controller_name . '/initiate_close')?>", {
 				'cashup_id': cashup_id
 			},
@@ -513,7 +529,7 @@ $(document).ready(function()
 	$('#close_day').change(function() {
 		if($(this).is(':checked')) {
 			$('#close_date').rules('add', 'required', true);
-			var cashup_id = $('#cashup_id').text().trim().match(/\d+/)[0];
+			var cashup_id = <?php echo json_encode(!empty($cash_ups_info->cashup_id) ? $cash_ups_info->cashup_id : null); ?>;
 			$.post("<?php echo site_url($controller_name . '/initiate_close')?>", {
 					'cashup_id': cashup_id
 				},
@@ -528,6 +544,7 @@ $(document).ready(function()
 						$('#closed_amount_total').val(response.closed_amount_total);
 						$('#expected_cash').val(response.expected_cash);
 						$('#initiate_close_btn').hide();
+						$('#close_day').prop('disabled', true);
 						$('#close_fields_section .close_fields_inner, #close_employee_section').show();
 						$('#close_date, #close_employee_id').prop('readonly', false);
 						recalculate_totals();

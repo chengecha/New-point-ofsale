@@ -85,7 +85,7 @@ if (isset($success))
 					<?php echo form_input(array('name'=>'item', 'id'=>'item', 'class'=>'form-control input-sm', 'size'=>'50', 'tabindex'=>'1')); ?>
 				</li>
 				<li class="pull-right">
-					<button id='new_item_button' class='btn btn-info btn-sm pull-right modal-dlg'
+					<button id='new_item_button' class='btn btn-info btn-sm pull-right modal-dlg modal-dlg-items'
 						data-btn-submit='<?php echo $this->lang->line('common_submit') ?>'
 						data-btn-new='<?php echo $this->lang->line('common_new') ?>'
 						data-href='<?php echo site_url("items/view"); ?>'

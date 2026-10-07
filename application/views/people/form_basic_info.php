@@ -24,12 +24,12 @@
 
 <div class="form-group form-group-sm">	
 	<?php echo form_label($this->lang->line('common_gender'), 'gender', !empty($basic_version) ? array('class'=>'required control-label col-xs-3') : array('class'=>'control-label col-xs-3')); ?>
-	<div class="col-xs-4">
+	<div class="col-xs-8">
 		<label class="radio-inline">
 			<?php echo form_radio(array(
 					'name'=>'gender',
 					'type'=>'radio',
-					'id'=>'gender',
+					'id'=>'gender_male',
 					'value'=>1,
 					'checked'=>$person_info->gender === '1')
 					); ?> <?php echo $this->lang->line('common_gender_male'); ?>
@@ -38,7 +38,7 @@
 			<?php echo form_radio(array(
 					'name'=>'gender',
 					'type'=>'radio',
-					'id'=>'gender',
+					'id'=>'gender_female',
 					'value'=>0,
 					'checked'=>$person_info->gender === '0')
 					); ?> <?php echo $this->lang->line('common_gender_female'); ?>
@@ -151,11 +151,12 @@
 
 <div class="form-group form-group-sm">	
 	<?php echo form_label($this->lang->line('common_comments'), 'comments', array('class'=>'control-label col-xs-3')); ?>
-	<div class='col-xs-8'>
+	<div class='col-xs-9'>
 		<?php echo form_textarea(array(
 				'name'=>'comments',
 				'id'=>'comments',
 				'class'=>'form-control input-sm',
+				'rows'=>'2',
 				'value'=>$person_info->comments)
 				);?>
 	</div>

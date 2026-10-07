@@ -67,7 +67,7 @@
 
 				<div class="form-group form-group-sm">
 					<?php echo form_label($this->lang->line('customers_discount'), 'discount', array('class' => 'control-label col-xs-3')); ?>
-					<div class='col-xs-3'>
+					<div class='col-xs-9'>
 						<div class="input-group input-group-sm">
 							<?php echo form_input(array(
 									'name'=>'discount',
@@ -94,7 +94,7 @@
 
 				<div class="form-group form-group-sm">
 					<?php echo form_label($this->lang->line('customers_account_number'), 'account_number', array('class' => 'control-label col-xs-3')); ?>
-					<div class='col-xs-4'>
+					<div class='col-xs-9'>
 						<?php echo form_input(array(
 								'name'=>'account_number',
 								'id'=>'account_number',
@@ -106,7 +106,7 @@
 
 				<div class="form-group form-group-sm">
 					<?php echo form_label($this->lang->line('customers_tax_id'), 'tax_id', array('class' => 'control-label col-xs-3')); ?>
-					<div class='col-xs-4'>
+					<div class='col-xs-9'>
 						<?php echo form_input(array(
 								'name'=>'tax_id',
 								'id'=>'tax_id',
@@ -209,7 +209,7 @@
 				<fieldset>
 					<div class="form-group form-group-sm">
 						<?php echo form_label($this->lang->line('customers_total'), 'total', array('class' => 'control-label col-xs-3')); ?>
-						<div class="col-xs-4">
+						<div class="col-xs-9">
 							<div class="input-group input-group-sm">
 								<?php if (!currency_side()): ?>
 									<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -230,7 +230,7 @@
 					
 					<div class="form-group form-group-sm">
 						<?php echo form_label($this->lang->line('customers_max'), 'max', array('class' => 'control-label col-xs-3')); ?>
-						<div class="col-xs-4">
+						<div class="col-xs-9">
 							<div class="input-group input-group-sm">
 								<?php if (!currency_side()): ?>
 									<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -251,7 +251,7 @@
 					
 					<div class="form-group form-group-sm">
 						<?php echo form_label($this->lang->line('customers_min'), 'min', array('class' => 'control-label col-xs-3')); ?>
-						<div class="col-xs-4">
+						<div class="col-xs-9">
 							<div class="input-group input-group-sm">
 								<?php if (!currency_side()): ?>
 									<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -272,7 +272,7 @@
 					
 					<div class="form-group form-group-sm">
 						<?php echo form_label($this->lang->line('customers_average'), 'average', array('class' => 'control-label col-xs-3')); ?>
-						<div class="col-xs-4">
+						<div class="col-xs-9">
 							<div class="input-group input-group-sm">
 								<?php if (!currency_side()): ?>
 									<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -293,7 +293,7 @@
 					
 					<div class="form-group form-group-sm">
 						<?php echo form_label($this->lang->line('customers_quantity'), 'quantity', array('class' => 'control-label col-xs-3')); ?>
-						<div class="col-xs-4">
+						<div class="col-xs-9">
 							<div class="input-group input-group-sm">
 								<?php echo form_input(array(
 										'name'=>'quantity',
@@ -308,7 +308,7 @@
 
 					<div class="form-group form-group-sm">
 						<?php echo form_label($this->lang->line('customers_avg_discount'), 'avg_discount', array('class' => 'control-label col-xs-3')); ?>
-						<div class="col-xs-3">
+						<div class="col-xs-9">
 							<div class="input-group input-group-sm">
 								<?php echo form_input(array(
 										'name'=>'avg_discount',

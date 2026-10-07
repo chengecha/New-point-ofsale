@@ -161,7 +161,7 @@
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_cost_price'), 'cost_price', array('class'=>'required control-label col-xs-3')); ?>
-			<div class="col-xs-4">
+			<div class="col-xs-9">
 				<div class="input-group input-group-sm">
 					<?php if (!currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -182,7 +182,7 @@
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_unit_price'), 'unit_price', array('class'=>'required control-label col-xs-3')); ?>
-			<div class='col-xs-4'>
+			<div class='col-xs-9'>
 				<div class="input-group input-group-sm">
 					<?php if (!currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -294,7 +294,7 @@
 		?>
 			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('items_quantity').' '.$location_detail['location_name'], 'quantity_' . $key, array('class'=>'required control-label col-xs-3')); ?>
-				<div class='col-xs-4'>
+				<div class='col-xs-9'>
 					<?php echo form_input(array(
 							'name'=>'quantity_' . $key,
 							'id'=>'quantity_' . $key,
@@ -310,7 +310,7 @@
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_receiving_quantity'), 'receiving_quantity', array('class'=>'required control-label col-xs-3')); ?>
-			<div class='col-xs-4'>
+			<div class='col-xs-9'>
 				<?php echo form_input(array(
 						'name'=>'receiving_quantity',
 						'id'=>'receiving_quantity',
@@ -323,7 +323,7 @@
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_reorder_level'), 'reorder_level', array('class'=>'required control-label col-xs-3')); ?>
-			<div class='col-xs-4'>
+			<div class='col-xs-9'>
 				<?php echo form_input(array(
 						'name'=>'reorder_level',
 						'id'=>'reorder_level',
@@ -336,11 +336,12 @@
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_description'), 'description', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-8'>
+			<div class='col-xs-9'>
 				<?php echo form_textarea(array(
 						'name'=>'description',
 						'id'=>'description',
 						'class'=>'form-control input-sm',
+						'rows'=>'2',
 						'value'=>$item_info->description)
 						);?>
 			</div>
@@ -398,7 +399,7 @@
 			?>
 			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('items_qty_per_pack'), 'qty_per_pack', array('class'=>'control-label col-xs-3')); ?>
-				<div class='col-xs-4'>
+				<div class='col-xs-9'>
 					<?php echo form_input(array(
 							'name'=>'qty_per_pack',
 							'id'=>'qty_per_pack',

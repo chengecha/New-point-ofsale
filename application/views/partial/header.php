@@ -138,6 +138,9 @@
 		/* Wider modal dialogs */
 		.modal-dlg .modal-dialog { width: 650px; }
 		.modal-dlg-wide .modal-dialog { width: 850px; }
+		.modal-dlg-customer .modal-dialog { width: 950px; }
+		.modal-dlg-items .modal-dialog { width: 950px; }
+		.modal-dlg-cashup .modal-dialog { width: 1300px; }
 
 		/* Two-column form layout in modal dialogs */
 		.modal-dialog .form-group.form-group-sm {
@@ -157,6 +160,13 @@
 		.modal-dialog .modal-body::after {
 			content: "";
 			display: table;
+			clear: both;
+		}
+
+		/* Full-width row for cashup sections: label + inputs on one row alone */
+		.modal-dlg-cashup .form-group.form-group-sm.cashup-full-row {
+			float: none;
+			width: 100%;
 			clear: both;
 		}
 	</style>

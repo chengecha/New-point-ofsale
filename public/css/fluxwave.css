@@ -189,7 +189,17 @@ label.required
 
 	.modal-dlg-cashup .modal-dialog
 	{
-		width: 900px;
+		width: 1300px;
+	}
+
+	.modal-dlg-customer .modal-dialog
+	{
+		width: 950px;
+	}
+
+	.modal-dlg-items .modal-dialog
+	{
+		width: 950px;
 	}
 }
 
