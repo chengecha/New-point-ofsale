@@ -179,12 +179,12 @@ label.required
 
 	.modal-dlg .modal-dialog
 	{
-		width: 500px;
+		width: 650px;
 	}
 
 	.modal-dlg-wide .modal-dialog
 	{
-		width: 750px;
+		width: 850px;
 	}
 
 	.modal-dlg-cashup .modal-dialog
@@ -281,4 +281,30 @@ body.topbar-hidden .wrapper {
 }
 .module-sales #overall_sale {
 	width: 26%;
+}
+
+/* Two-column form layout in modal dialogs: form groups float side-by-side */
+.modal-dialog .form-group.form-group-sm {
+	float: left;
+	width: 50%;
+	margin-left: 0;
+	margin-right: 0;
+	box-sizing: border-box;
+}
+
+.modal-dialog .form-group.form-group-sm:nth-child(odd) {
+	clear: left;
+}
+
+/* Full-width textareas within modal forms */
+.modal-dialog .form-group.form-group-sm textarea.form-control {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* Clearfix for floated form groups in modal body */
+.modal-dialog .modal-body::after {
+	content: "";
+	display: table;
+	clear: both;
 }

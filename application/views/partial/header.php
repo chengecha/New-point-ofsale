@@ -134,6 +134,31 @@
 		.module-sales #overall_sale {
 			width: 26% !important;
 		}
+
+		/* Wider modal dialogs */
+		.modal-dlg .modal-dialog { width: 650px; }
+		.modal-dlg-wide .modal-dialog { width: 850px; }
+
+		/* Two-column form layout in modal dialogs */
+		.modal-dialog .form-group.form-group-sm {
+			float: left;
+			width: 50%;
+			margin-left: 0;
+			margin-right: 0;
+			box-sizing: border-box;
+		}
+		.modal-dialog .form-group.form-group-sm:nth-child(odd) {
+			clear: left;
+		}
+		.modal-dialog .form-group.form-group-sm textarea.form-control {
+			width: 100%;
+			box-sizing: border-box;
+		}
+		.modal-dialog .modal-body::after {
+			content: "";
+			display: table;
+			clear: both;
+		}
 	</style>
 </head>
 
