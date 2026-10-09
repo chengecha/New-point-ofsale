@@ -35,7 +35,11 @@
 	$.ajax = function() {
 		var args = arguments[0];
 		if (args['type'] && args['type'].toLowerCase() == 'post' && csrf_token()) {
-			if (typeof args['data'] === 'string')
+			if (args['data'] instanceof FormData)
+			{
+				args['data'].append('<?php echo $this->security->get_csrf_token_name(); ?>', csrf_token());
+			}
+			else if (typeof args['data'] === 'string')
 			{
 				args['data'] += '&' + $.param(csrf_form_base());
 			}

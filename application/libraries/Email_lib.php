@@ -87,7 +87,11 @@ class Email_lib
 
 		if (!$result)
 		{
-			error_log($email->print_debugger());
+			log_message('error', 'Email send failed to ' . $to . ': ' . $email->print_debugger());
+		}
+		else
+		{
+			log_message('info', 'Email sent successfully to ' . $to . ' with subject: ' . $subject);
 		}
 
 		return $result;

@@ -8,28 +8,31 @@
                 </button>
             </div>
             <form id="emailForm" enctype="multipart/form-data">
+                <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
+                <style>
+                #emailModal label { font-size: 0.85rem; }
+                #emailModal .form-control, #emailModal .form-control-file { font-size: 0.85rem; padding: 2px 6px; height: auto; }
+                #emailModal textarea.form-control { padding: 2px 6px; }
+                #emailModal .form-group { margin-bottom: 0.5rem; }
+                #emailModal .form-text { font-size: 0.75rem; }
+                </style>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="email_to"><?php echo $this->lang->line('sales_email_to'); ?></label>
-                        <input type="email" class="form-control" id="email_to" name="to" value="<?php echo htmlspecialchars($customer_email); ?>" required>
+                        <input type="email" class="form-control input-sm" id="email_to" name="to" value="<?php echo htmlspecialchars($customer_email); ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="email_cc"><?php echo $this->lang->line('sales_email_cc'); ?></label>
-                        <input type="email" class="form-control" id="email_cc" name="cc" placeholder="<?php echo $this->lang->line('sales_email_cc_placeholder'); ?>">
+                        <input type="email" class="form-control input-sm" id="email_cc" name="cc" placeholder="<?php echo $this->lang->line('sales_email_cc_placeholder'); ?>">
                         <small class="form-text text-muted"><?php echo $this->lang->line('sales_email_cc_help'); ?></small>
                     </div>
                     <div class="form-group">
-                        <label for="email_bcc"><?php echo $this->lang->line('sales_email_bcc'); ?></label>
-                        <input type="email" class="form-control" id="email_bcc" name="bcc" placeholder="<?php echo $this->lang->line('sales_email_bcc_placeholder'); ?>">
-                        <small class="form-text text-muted"><?php echo $this->lang->line('sales_email_bcc_help'); ?></small>
-                    </div>
-                    <div class="form-group">
                         <label for="email_subject"><?php echo $this->lang->line('sales_email_subject'); ?></label>
-                        <input type="text" class="form-control" id="email_subject" name="subject" value="<?php echo htmlspecialchars($subject); ?>" required>
+                        <input type="text" class="form-control input-sm" id="email_subject" name="subject" value="<?php echo htmlspecialchars($subject); ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="email_message"><?php echo $this->lang->line('sales_email_message'); ?></label>
-                        <textarea class="form-control" id="email_message" name="message" rows="10" required><?php echo $message; ?></textarea>
+                        <textarea class="form-control input-sm" id="email_message" name="message" rows="8" required><?php echo $message; ?></textarea>
                     </div>
                     <div class="form-group">
                         <label for="email_attachments"><?php echo $this->lang->line('sales_email_attachments'); ?></label>
@@ -104,6 +107,8 @@ $(document).ready(function() {
         $spinner.removeClass('d-none');
         
         var formData = new FormData(this);
+        
+        formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', csrf_token());
         
         for (var i = 0; i < attachmentFiles.length; i++) {
             formData.append('attachments[]', attachmentFiles[i]);
