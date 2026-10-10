@@ -9,13 +9,38 @@
             </div>
             <form id="emailForm" enctype="multipart/form-data">
                 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                <style>
+                 <style>
                 #emailModal label { font-size: 0.85rem; }
                 #emailModal .form-control, #emailModal .form-control-file { font-size: 0.85rem; padding: 2px 6px; height: auto; }
                 #emailModal textarea.form-control { padding: 2px 6px; }
                 #emailModal .form-group { margin-bottom: 0.5rem; }
                 #emailModal .form-text { font-size: 0.75rem; }
+                #emailLoadingOverlay {
+                    display: none;
+                    position: fixed;
+                    top: 0; left: 0;
+                    width: 100%; height: 100%;
+                    background: rgba(255, 255, 255, 0.85);
+                    z-index: 1060;
+                    text-align: center;
+                    padding-top: 20%;
+                }
+                #emailLoadingOverlay .rotating {
+                    display: inline-block;
+                    animation: emailRotate 1s linear infinite;
+                }
+                @keyframes emailRotate {
+                    100% { transform: rotate(360deg); }
+                }
                 </style>
+                <div id="emailLoadingOverlay">
+                    <div class="rotating">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="sr-only">Sending...</span>
+                        </div>
+                    </div>
+                    <p class="mt-3" style="font-size: 1rem;">Sending email, please wait...</p>
+                </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="email_to"><?php echo $this->lang->line('sales_email_to'); ?></label>
@@ -121,6 +146,9 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             dataType: 'json',
+            beforeSend: function() {
+                $('#emailLoadingOverlay').show();
+            },
             success: function(response) {
                 $.notify({ message: response.message }, { type: response.success ? 'success' : 'danger' });
                 if (response.success) {
@@ -131,6 +159,7 @@ $(document).ready(function() {
                 $.notify({ message: '<?php echo $this->lang->line('sales_email_error'); ?>' }, { type: 'danger' });
             },
             complete: function() {
+                $('#emailLoadingOverlay').hide();
                 $btn.prop('disabled', false);
                 $spinner.addClass('d-none');
             }
