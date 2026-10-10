@@ -16,15 +16,38 @@
 			</div>
 		</div>
 
+	<div class="form-group form-group-sm">
+		<?php echo form_label($this->lang->line('suppliers_account_number'), 'account_number', array('class'=>'control-label col-xs-3')); ?>
+		<div class='col-xs-8'>
+			<?php echo form_input(array(
+				'name'=>'account_number',
+				'id'=>'account_number',
+				'class'=>'form-control input-sm',
+				'value'=>$person_info->account_number)
+				);?>
+		</div>
+	</div>
+
+	<div class="form-group form-group-sm">
+		<?php echo form_label($this->lang->line('suppliers_tax_id'), 'tax_id', array('class'=>'control-label col-xs-3')); ?>
+		<div class='col-xs-8'>
+			<?php echo form_input(array(
+					'name'=>'tax_id',
+					'id'=>'tax_id',
+					'class'=>'form-control input-sm',
+					'value'=>$person_info->tax_id)
+			);?>
+		</div>
+	</div>
+
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('suppliers_category'), 'category', array('class'=>'required control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
+			<div class='col-xs-8'>
 				<?php echo form_dropdown('category', $categories, $person_info->category, array('class'=>'form-control', 'id'=>'category'));?>
 			</div>
 		</div>
 
-		<div class="form-group form-group-sm">	
-			<?php echo form_label($this->lang->line('suppliers_agency_name'), 'agency_name', array('class'=>'control-label col-xs-3')); ?>
+		<div class="form-group form-group-sm" style="display:none;">
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
 					'name'=>'agency_name',
@@ -40,36 +63,15 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				// Rename City to County for suppliers
-				$('label[for="city"]').html('<?php echo $this->lang->line('County'); ?>');
+				$('label[for="city"]').html('<?php echo $this->lang->line('common_state'); ?>');
 				// Hide State field for suppliers
 				$('#state').closest('.form-group').hide();
+				// Hide postal code for suppliers
+				$('#postcode').closest('.form-group').hide();
 			});
 		</script>
 
-		<div class="form-group form-group-sm">	
-			<?php echo form_label($this->lang->line('suppliers_account_number'), 'account_number', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-8'>
-				<?php echo form_input(array(
-					'name'=>'account_number',
-					'id'=>'account_number',
-					'class'=>'form-control input-sm',
-					'value'=>$person_info->account_number)
-					);?>
-			</div>
-		</div>
-
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('suppliers_tax_id'), 'tax_id', array('class'=>'control-label col-xs-3')); ?>
-			<div class='col-xs-8'>
-				<?php echo form_input(array(
-						'name'=>'tax_id',
-						'id'=>'tax_id',
-						'class'=>'form-control input-sm',
-						'value'=>$person_info->tax_id)
-				);?>
-			</div>
-		</div>
-	</fieldset>
+		</fieldset>
 <?php echo form_close(); ?>
 
 <script type="text/javascript">

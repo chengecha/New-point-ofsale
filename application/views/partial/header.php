@@ -140,9 +140,9 @@
 		.modal-dlg-wide .modal-dialog { width: 850px; }
 		.modal-dlg-customer .modal-dialog { width: 950px; }
 		.modal-dlg-items .modal-dialog { width: 950px; }
-		.modal-dlg-cashup .modal-dialog { width: 1300px; }
+		.modal-dlg-cashup .modal-dialog { width: 950px; }
 
-		/* Two-column form layout in modal dialogs */
+		/* Two-column form layout in modal dialogs - general default */
 		.modal-dialog .form-group.form-group-sm {
 			float: left;
 			width: 50%;
@@ -152,6 +152,16 @@
 		}
 		.modal-dialog .form-group.form-group-sm:nth-child(odd) {
 			clear: left;
+		}
+		/* Items form uses nested columns - reset float within columns */
+		.items-columns .form-group.form-group-sm {
+			float: none;
+			width: 100%;
+		}
+		/* Suppliers form - reset float within columns */
+		.suppliers-columns .form-group.form-group-sm {
+			float: none;
+			width: 100%;
 		}
 		.modal-dialog .form-group.form-group-sm textarea.form-control {
 			width: 100%;

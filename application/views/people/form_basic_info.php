@@ -89,7 +89,7 @@
 	</div>
 </div>
 
-<div class="form-group form-group-sm">	
+<div class="form-group form-group-sm" style="display:none;">
 	<?php echo form_label($this->lang->line('common_address_2'), 'address_2', array('class'=>'control-label col-xs-3')); ?>
 	<div class='col-xs-8'>
 		<?php echo form_input(array(
