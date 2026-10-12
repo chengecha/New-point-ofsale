@@ -163,6 +163,25 @@
 			float: none;
 			width: 100%;
 		}
+		/* Suppliers form - grid two-column layout */
+		#supplier_basic_info {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0;
+			box-sizing: border-box;
+			padding: 0;
+		}
+		#supplier_basic_info .form-group.form-group-sm {
+			float: none;
+			width: 100%;
+			margin-left: 0;
+			margin-right: 0;
+			clear: none;
+		}
+		/* Force specific fields into the right column */
+		#supplier_basic_info .form-group.form-group-sm.right-col {
+			grid-column: 2;
+		}
 		.modal-dialog .form-group.form-group-sm textarea.form-control {
 			width: 100%;
 			box-sizing: border-box;
@@ -178,6 +197,55 @@
 			float: none;
 			width: 100%;
 			clear: both;
+		}
+
+		/* Sales edit form - two-column layout for transaction details */
+		#sale_transaction_info {
+			padding: 0;
+		}
+		#sale_transaction_info .form-group.form-group-sm {
+			float: none;
+			width: 100%;
+			margin-left: 0;
+			margin-right: 0;
+			clear: none;
+			margin-bottom: 10px;
+		}
+		/* Column alignment - remove col offsets */
+		.sale-tabs-container .row {
+			margin-left: 0;
+			margin-right: 0;
+		}
+		.left-column-fields,
+		.right-column-fields {
+			padding-left: 0;
+			padding-right: 0;
+		}
+		.left-column-fields .form-group,
+		.right-column-fields .form-group {
+			margin-bottom: 10px;
+		}
+		/* Remove default col-xs-8 offset in columns */
+		.left-column-fields .form-group .col-xs-8,
+		.right-column-fields .form-group .col-xs-8,
+		.left-column-fields .form-group .control-label,
+		.right-column-fields .form-group .control-label {
+			padding-left: 0;
+		}
+		/* Full-width row spanning both columns */
+		#sale_transaction_info .form-group.form-group-sm.full-width {
+			grid-column: 1 / 3;
+		}
+		/* Items list table styling in modal */
+		.table-items {
+			margin-bottom: 0;
+		}
+		.table-items th,
+		.table-items td {
+			padding: 6px 12px;
+		}
+		.table-items small {
+			display: block;
 		}
 	</style>
 </head>

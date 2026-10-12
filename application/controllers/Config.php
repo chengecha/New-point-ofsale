@@ -225,21 +225,26 @@ class Config extends Secure_Controller
 		$data['selected_image_allowed_types'] 	= explode('|',$this->config->item('image_allowed_types'));
 
 		//Load Integrations Related fields
-		$data['mailchimp']	= array();
+		$data['mpesa']	= array();
 
 		if($this->_check_encryption())
 		{
-			$data['mailchimp']['api_key'] = $this->encryption->decrypt($this->config->item('mailchimp_api_key'));
-			$data['mailchimp']['list_id'] = $this->encryption->decrypt($this->config->item('mailchimp_list_id'));
+			$data['mpesa']['consumer_key'] = $this->encryption->decrypt($this->config->item('mpesa_consumer_key'));
+			$data['mpesa']['consumer_secret'] = $this->encryption->decrypt($this->config->item('mpesa_consumer_secret'));
 		}
 		else
 		{
-			$data['mailchimp']['api_key'] = '';
-			$data['mailchimp']['list_id'] = '';
+			$data['mpesa']['consumer_key'] = '';
+			$data['mpesa']['consumer_secret'] = '';
 		}
 
-		// load mailchimp lists associated to the given api key, already XSS cleaned in the private function
-		$data['mailchimp']['lists'] = $this->_mailchimp();
+		$data['mpesa']['env'] = $this->config->item('mpesa_env');
+		$data['mpesa']['shortcode'] = $this->config->item('mpesa_shortcode');
+		$data['mpesa']['passkey'] = $this->config->item('mpesa_passkey');
+		$data['mpesa']['callback_url'] = $this->config->item('mpesa_callback_url');
+		$data['mpesa']['stk_push_url'] = $this->config->item('mpesa_stk_push_url');
+		$data['mpesa']['query_status_url'] = $this->config->item('mpesa_query_status_url');
+		$data['mpesa']['ais_url'] = $this->config->item('mpesa_ais_url');
 
 		$this->load->view("configs/manage", $data);
 	}
@@ -459,59 +464,52 @@ class Config extends Secure_Controller
 	}
 
 	/*
-	 * This function fetches all the available lists from Mailchimp for the given API key
+	 * Test M-Pesa connection by attempting to generate an access token
 	 */
-	private function _mailchimp($api_key = '')
+	public function ajax_test_mpesa_connection()
 	{
-		$this->load->library('mailchimp_lib', array('api_key' => $api_key));
+		$this->load->library('mpesa_lib');
 
-		$result = array();
+		// Temporarily override config items with posted values
+		$this->config->set('mpesa_env', $this->input->post('mpesa_env'));
+		$this->config->set('mpesa_consumer_key', $this->input->post('mpesa_consumer_key'));
+		$this->config->set('mpesa_consumer_secret', $this->input->post('mpesa_consumer_secret'));
+		$this->config->set('mpesa_shortcode', $this->input->post('mpesa_shortcode'));
+		$this->config->set('mpesa_passkey', $this->input->post('mpesa_passkey'));
 
-		if(($lists = $this->mailchimp_lib->getLists()) !== FALSE)
-		{
-			if(is_array($lists) && !empty($lists['lists']) && is_array($lists['lists']))
-			{
-				foreach($lists['lists'] as $list)
-				{
-					$list = $this->xss_clean($list);
-					$result[$list['id']] = $list['name'] . ' [' . $list['stats']['member_count'] . ']';
-				}
-			}
-		}
+		// Re-initialize the library with new values
+		$this->mpesa_lib = new Mpesa_lib();
 
-		return $result;
-	}
-
-	/*
-	 AJAX call from mailchimp config form to fetch the Mailchimp lists when a valid API key is inserted
-	 */
-	public function ajax_check_mailchimp_api_key()
-	{
-		// load mailchimp lists associated to the given api key, already XSS cleaned in the private function
-		$lists = $this->_mailchimp($this->input->post('mailchimp_api_key'));
-		$success = count($lists) > 0 ? TRUE : FALSE;
+		$access_token = $this->mpesa_lib->generate_access_token();
+		$success = $access_token ? TRUE : FALSE;
 
 		echo json_encode(array(
 			'success' => $success,
-			'message' => $this->lang->line('config_mailchimp_key_' . ($success ? '' : 'un') . 'successfully'),
-			'mailchimp_lists' => $lists
+			'message' => $this->lang->line('config_mpesa_' . ($success ? '' : 'not_') . 'connected')
 		));
 	}
 
-	public function save_mailchimp()
+	public function save_mpesa()
 	{
-		$api_key = '';
-		$list_id = '';
+		$consumer_key = '';
+		$consumer_secret = '';
 
 		if($this->_check_encryption())
 		{
-			$api_key = $this->encryption->encrypt($this->input->post('mailchimp_api_key'));
-			$list_id = $this->encryption->encrypt($this->input->post('mailchimp_list_id'));
+			$consumer_key = $this->encryption->encrypt($this->input->post('mpesa_consumer_key'));
+			$consumer_secret = $this->encryption->encrypt($this->input->post('mpesa_consumer_secret'));
 		}
 
 		$batch_save_data = array(
-			'mailchimp_api_key' => $api_key,
-			'mailchimp_list_id' => $list_id
+			'mpesa_env' => $this->input->post('mpesa_env'),
+			'mpesa_consumer_key' => $consumer_key,
+			'mpesa_consumer_secret' => $consumer_secret,
+			'mpesa_shortcode' => $this->input->post('mpesa_shortcode'),
+			'mpesa_passkey' => $this->input->post('mpesa_passkey'),
+			'mpesa_callback_url' => $this->input->post('mpesa_callback_url'),
+			'mpesa_stk_push_url' => $this->input->post('mpesa_stk_push_url'),
+			'mpesa_query_status_url' => $this->input->post('mpesa_query_status_url'),
+			'mpesa_ais_url' => $this->input->post('mpesa_ais_url')
 		);
 
 		$result = $this->Appconfig->batch_save($batch_save_data);

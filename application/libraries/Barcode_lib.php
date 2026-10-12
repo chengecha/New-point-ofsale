@@ -171,7 +171,7 @@ class Barcode_lib
 			$matrix = $qrCode->getMatrix();
 			$moduleCount = $matrix->getWidth();
 
-			$pixelSize = 6;
+			$pixelSize = 3;
 			$imgSize = $moduleCount * $pixelSize;
 
 			$im = imagecreate($imgSize, $imgSize);

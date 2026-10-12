@@ -32,10 +32,10 @@
 		<?php echo form_label($this->lang->line('suppliers_tax_id'), 'tax_id', array('class'=>'control-label col-xs-3')); ?>
 		<div class='col-xs-8'>
 			<?php echo form_input(array(
-					'name'=>'tax_id',
-					'id'=>'tax_id',
-					'class'=>'form-control input-sm',
-					'value'=>$person_info->tax_id)
+				'name'=>'tax_id',
+				'id'=>'tax_id',
+				'class'=>'form-control input-sm',
+				'value'=>$person_info->tax_id)
 			);?>
 		</div>
 	</div>
@@ -68,6 +68,10 @@
 				$('#state').closest('.form-group').hide();
 				// Hide postal code for suppliers
 				$('#postcode').closest('.form-group').hide();
+
+				// Move Address and Country to the right column
+				$('#address_1').closest('.form-group').addClass('right-col');
+				$('#country').closest('.form-group').addClass('right-col');
 			});
 		</script>
 
@@ -91,7 +95,7 @@ $(document).ready(function()
 		},
 
 		errorLabelContainer: '#error_message_box',
- 
+  
 		rules:
 		{
 			company_name: 'required',

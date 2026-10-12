@@ -251,30 +251,64 @@ function get_payment_options($mpesa_variants = FALSE)
 
 	$payments = [];
 
+	$order = $config->item('payment_options_order');
+	$is_kenya = stripos($config->item('country_codes'), 'KE') !== false;
 
-if($config->item('payment_options_order') == 'debitcreditcash')
+	if($order == 'debitcreditcash')
 	{
 // UAV		$payments[$lang->line('sales_debit')] = $lang->line('sales_debit');
 // UAV		$payments[$lang->line('sales_credit')] = $lang->line('sales_credit');
 		$payments[$lang->line('sales_cash')] = $lang->line('sales_cash');
 	}
- elseif($config->item('payment_options_order') == 'debitcashcredit')
+	elseif($order == 'debitcashcredit')
 	{
 // UAV		$payments[$lang->line('sales_debit')] = $lang->line('sales_debit');
 		$payments[$lang->line('sales_cash')] = $lang->line('sales_cash');
 // UAV		$payments[$lang->line('sales_credit')] = $lang->line('sales_credit');
 	}
- elseif($config->item('payment_options_order') == 'creditdebitcash')
+	elseif($order == 'creditdebitcash')
 	{
 // UAV		$payments[$lang->line('sales_credit')] = $lang->line('sales_credit');
 // UAV		$payments[$lang->line('sales_debit')] = $lang->line('sales_debit');
 		$payments[$lang->line('sales_cash')] = $lang->line('sales_cash');
 	}
- elseif($config->item('payment_options_order') == 'creditcashdebit')
+	elseif($order == 'creditcashdebit')
 	{
 // UAV		$payments[$lang->line('sales_credit')] = $lang->line('sales_credit');
 		$payments[$lang->line('sales_cash')] = $lang->line('sales_cash');
 // UAV		$payments[$lang->line('sales_debit')] = $lang->line('sales_debit');
+	}
+	elseif($order == 'mpesacash' && $is_kenya)
+	{
+		$payments[$lang->line('sales_mpesa')] = $lang->line('sales_mpesa');
+		if($mpesa_variants)
+		{
+			$mpesa = $lang->line('sales_mpesa');
+			$payments[$mpesa . ':' . $lang->line('sales_mpesa_offline')] = $lang->line('sales_mpesa_offline');
+			$payments[$mpesa . ':' . $lang->line('sales_mpesa_stk_push')] = $lang->line('sales_mpesa_stk_push');
+		}
+		$payments[$lang->line('sales_cash')] = $lang->line('sales_cash');
+	}
+	elseif($order == 'cashmpesa' && $is_kenya)
+	{
+		$payments[$lang->line('sales_cash')] = $lang->line('sales_cash');
+		$payments[$lang->line('sales_mpesa')] = $lang->line('sales_mpesa');
+		if($mpesa_variants)
+		{
+			$mpesa = $lang->line('sales_mpesa');
+			$payments[$mpesa . ':' . $lang->line('sales_mpesa_offline')] = $lang->line('sales_mpesa_offline');
+			$payments[$mpesa . ':' . $lang->line('sales_mpesa_stk_push')] = $lang->line('sales_mpesa_stk_push');
+		}
+	}
+	elseif($order == 'mpesa' && $is_kenya)
+	{
+		$payments[$lang->line('sales_mpesa')] = $lang->line('sales_mpesa');
+		if($mpesa_variants)
+		{
+			$mpesa = $lang->line('sales_mpesa');
+			$payments[$mpesa . ':' . $lang->line('sales_mpesa_offline')] = $lang->line('sales_mpesa_offline');
+			$payments[$mpesa . ':' . $lang->line('sales_mpesa_stk_push')] = $lang->line('sales_mpesa_stk_push');
+		}
 	}
 	else // default: if($config->item('payment_options_order') == 'cashdebitcredit')
 	{
@@ -293,7 +327,8 @@ if($config->item('payment_options_order') == 'debitcreditcash')
 	}
 
 	// If Kenya (list of country codes include Kenya) then include M-Pesa
-	if (stripos(get_instance()->config->item('country_codes'), 'KE') !== false)
+	// Skip if M-Pesa was already added via payment_options_order
+	if ($is_kenya && $order != 'mpesa' && $order != 'cashmpesa' && $order != 'mpesacash')
 	{
 		$payments[$lang->line('sales_mpesa')] = $lang->line('sales_mpesa');
 

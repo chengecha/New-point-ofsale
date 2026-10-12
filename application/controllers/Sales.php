@@ -1444,6 +1444,17 @@ class Sales extends Secure_Controller
 		$data['selected_employee_id'] = $sale_info['employee_id'];
 		$data['selected_employee_name'] = $this->xss_clean($employee_info->first_name . ' ' . $employee_info->last_name);
 		$data['sale_info'] = $sale_info;
+
+		$data['items'] = array();
+		foreach($this->Sale->get_sale_items_ordered($sale_id)->result() as $item)
+		{
+			foreach(get_object_vars($item) as $property => $value)
+			{
+				$item->$property = $this->xss_clean($value);
+			}
+			$data['items'][] = $item;
+		}
+
 		$balance_due = round($sale_info['amount_due'] - $sale_info['amount_tendered'] + $sale_info['cash_refund'], totals_decimals(), PHP_ROUND_HALF_UP);
 		if(!$this->sale_lib->reset_cash_rounding() && $balance_due < 0)
 		{

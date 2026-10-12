@@ -27,10 +27,12 @@ class Email_lib
 			'mailtype' => 'html',
 			'useragent' => 'Fluxwave POS',
 			'validate' => TRUE,
+			'newline' => "\r\n",
+			'wordwrap' => FALSE,
 			'protocol' => $this->CI->config->item('protocol'),
 			'mailpath' => $this->CI->config->item('mailpath'),
 			'smtp_host' => $this->CI->config->item('smtp_host'),
-			'smtp_user' => $this->CI->config->item('smtp_user'),
+			'smtp_user' => trim($this->CI->config->item('smtp_user')),
 			'smtp_pass' => ($smtp_pass !== '' && $smtp_pass !== NULL)
 				? $this->CI->encryption->decrypt($smtp_pass)
 				: '',

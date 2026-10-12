@@ -10,26 +10,31 @@ class Mpesa_lib {
     protected $shortcode;
     protected $passkey;
     protected $callback_url;
+    protected $ais_url;
+    protected $stk_push_url;
+    protected $query_status_url;
 
     public function __construct() {
         $this->CI =& get_instance();
-        $this->CI->load->config('mpesa', TRUE);
 
-        $this->env             = $this->CI->config->item('mpesa_env', 'mpesa');
-        $this->consumer_key    = $this->CI->config->item('mpesa_consumer_key', 'mpesa');
-        $this->consumer_secret = $this->CI->config->item('mpesa_consumer_secret', 'mpesa');
-        $this->shortcode       = $this->CI->config->item('mpesa_shortcode', 'mpesa');
-        $this->passkey         = $this->CI->config->item('mpesa_passkey', 'mpesa');
-        $this->callback_url    = $this->CI->config->item('mpesa_callback_url', 'mpesa');
+        $this->env             = $this->CI->config->item('mpesa_env');
+        $this->consumer_key    = $this->CI->config->item('mpesa_consumer_key');
+        $this->consumer_secret = $this->CI->config->item('mpesa_consumer_secret');
+        $this->shortcode       = $this->CI->config->item('mpesa_shortcode');
+        $this->passkey         = $this->CI->config->item('mpesa_passkey');
+        $this->callback_url    = $this->CI->config->item('mpesa_callback_url');
+        $this->ais_url         = $this->CI->config->item('mpesa_ais_url');
+        $this->stk_push_url    = $this->CI->config->item('mpesa_stk_push_url');
+        $this->query_status_url = $this->CI->config->item('mpesa_query_status_url');
     }
 
     /**
      * Generate Safaricom Daraja OAuth Access Token
      */
     public function generate_access_token() {
-        $url = ($this->env == 'production') 
-            ? 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials' 
-            : 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+        $url = $this->ais_url ?: (($this->env == 'production')
+            ? 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+            : 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials');
 
         $credentials = base64_encode($this->consumer_key . ':' . $this->consumer_secret);
 
@@ -63,9 +68,9 @@ class Mpesa_lib {
             return array('status' => false, 'message' => 'Failed to generate M-Pesa access token.');
         }
 
-        $url = ($this->env == 'production')
+        $url = $this->stk_push_url ?: (($this->env == 'production')
             ? 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
-            : 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+            : 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest');
 
         $timestamp = date('YmdHis');
         $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
@@ -139,9 +144,9 @@ class Mpesa_lib {
             return array('status' => false, 'message' => 'Failed to generate M-Pesa access token.');
         }
 
-        $url = ($this->env == 'production')
+        $url = $this->query_status_url ?: (($this->env == 'production')
             ? 'https://api.safaricom.co.ke/mpesa/stkpush/v1/query'
-            : 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/query';
+            : 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/query');
 
         $timestamp = date('YmdHis');
         $password = base64_encode($this->shortcode . $this->passkey . $timestamp);

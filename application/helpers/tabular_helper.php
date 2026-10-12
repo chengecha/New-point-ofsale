@@ -801,7 +801,7 @@ function get_cash_up_data_row($cash_up)
 		'discrepancy_variance' => to_currency($cash_up->discrepancy_variance),
 		'note' => $cash_up->description,
 		'edit' => anchor($controller_name."/view/$cash_up->cashup_id", '<span class="glyphicon glyphicon-edit"></span>',
-			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update'))
+			array('class'=>'modal-dlg modal-dlg-cashup', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update'))
 		)
 	);
 }

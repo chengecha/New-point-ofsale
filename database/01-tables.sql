@@ -118,7 +118,16 @@ INSERT INTO ospos_app_config ("key", value) VALUES
 ('suggestions_second_column', ''),
 ('suggestions_third_column', ''),
 ('allow_duplicate_barcodes', '0'),
-('quote_default_comments', 'This is a default quote comment');
+('quote_default_comments', 'This is a default quote comment'),
+('mpesa_env', 'sandbox'),
+('mpesa_consumer_key', ''),
+('mpesa_consumer_secret', ''),
+('mpesa_shortcode', '174379'),
+('mpesa_passkey', ''),
+('mpesa_callback_url', ''),
+('mpesa_stk_push_url', ''),
+('mpesa_query_status_url', ''),
+('mpesa_ais_url', '');
 
 -- --------------------------------------------------------
 

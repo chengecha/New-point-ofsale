@@ -5,8 +5,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['mpesa_env']            = 'sandbox'; 
 
 // Paste your keys from the Daraja portal here
-$config['mpesa_consumer_key']     = 'YOUR_CONSUMER_KEY_HERE';
-$config['mpesa_consumer_secret']  = 'YOUR_CONSUMER_SECRET_HERE';
+$config['mpesa_consumer_key']     = 'YOUR_CONSUMER_KEY_HERE'; 
+$config['mpesa_consumer_secret']  = 'YOUR_CONSUMER_SECRET_HERE'; 
 
 // Your Business Shortcode (Paybill or Buy Goods Till Number)
 $config['mpesa_shortcode']        = '174379'; // Sandbox default paybill
@@ -16,3 +16,8 @@ $config['mpesa_passkey']          = 'YOUR_PASSKEY_HERE';
 
 // Your public callback URL (use ngrok for local testing)
 $config['mpesa_callback_url']     = 'https://yourdomain.com/index.php/sales/mpesa_callback';
+
+// Optional: Custom API endpoint URLs (leave empty to use default environment URLs)
+$config['mpesa_ais_url']          = ''; // Access Token (OAuth) endpoint
+$config['mpesa_stk_push_url']     = ''; // STK Push endpoint
+$config['mpesa_query_status_url'] = ''; // Transaction Status/Query endpoint
