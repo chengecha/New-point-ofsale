@@ -95,4 +95,5 @@ $lang["common_year"] = "Year";
  $lang["common_employee"] = "Employee";
  $lang["common_items"] = "Items";
  $lang["common_no_records"] = "No records";
+ $lang["common_no_access"] = "Permission denied.";
  $lang["common_payment"] = "Payment";
