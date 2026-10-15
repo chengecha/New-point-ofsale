@@ -1,135 +1,963 @@
-#register_wrapper
-{
-	float: left;
-	width: 70%;
-	font-size: 13px;
+/*
+* Modern POS Register — Fluxwave POS
+* Clean SaaS aesthetic: indigo primary, slate/zinc palette, subtle shadows,
+* rounded corners, crisp Inter typography, accessible focus rings.
+* No HTML structure, IDs, classes, or event listeners are altered.
+*/
+
+/* ===== Design tokens ===== */
+:root {
+	--color-primary: #4F46E5;
+	--color-primary-hover: #4338CA;
+	--color-primary-focus: rgba(79, 70, 229, 0.3);
+	--color-success: #16a34a;
+	--color-success-hover: #15803d;
+	--color-danger: #dc2626;
+	--color-danger-hover: #b91c1c;
+	--color-suspend: #f59e0b;
+	--color-suspend-hover: #d97706;
+	--color-bg-panel: #ffffff;
+	--color-bg-subtle: #f8fafc;
+	--color-bg-muted: #f1f5f9;
+	--color-border: #e2e8f0;
+	--color-border-strong: #cbd5e1;
+	--color-text: #0f172a;
+	--color-text-muted: #64748b;
+	--color-text-heading: #334155;
+	--color-shadow: rgba(0, 0, 0, 0.04);
 }
 
-#mode_form, #add_item_form
-{
+/* ===== Base typography and two-column layout ===== */
+
+#register_wrapper,
+#overall_sale {
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	font-size: 14px;
+	font-weight: 400;
+}
+
+/* Two-column float layout (73% left / 26% right). Box-sizing keeps the gap
+   inside the declared width so columns never wrap. */
+#register_wrapper {
+	float: left;
+	width: 70%;
+	font-size: 14px;
+	box-sizing: border-box;
+	padding-right: 12px;
+}
+
+#overall_sale {
+	width: 29%;
+	float: left;
+	margin-left: 0;
+	padding-left: 12px;
+	box-sizing: border-box;
+	padding-bottom: 1em;
+	padding-top: 1em;
+	background-color: var(--color-bg-panel);
+	font-size: 14px;
+	text-align: center;
+}
+
+.clearfix {
+	*zoom: 1;
+}
+#register_wrapper:before,
+#register_wrapper:after,
+#overall_sale:before,
+#overall_sale:after,
+#mode_form:before,
+#mode_form:after,
+#add_item_form:before,
+#add_item_form:after {
+	content: "";
+	display: table;
+}
+#register_wrapper:after,
+#overall_sale:after,
+#mode_form:after,
+#add_item_form:after {
+	clear: both;
+}
+
+/* ===== Top register controls — mode_form ===== */
+
+#mode_form {
+	background-color: var(--color-bg-subtle);
+	border-radius: 10px;
+	box-shadow: 0 1px 3px var(--color-shadow);
+	border: 1px solid var(--color-border);
+	margin: 0;
+	padding: 0;
+}
+
+#mode_form,
+#add_item_form {
 	margin: 0;
 }
 
-#mode_form .panel-body, #add_item_form .panel-body
-{
+#mode_form .panel-body,
+#add_item_form .panel-body {
 	padding: 0.7em;
 	margin: 0;
 }
 
-#mode_form
-{
-	background-color: #DDD;
-}
-
-#mode_form ul, #add_item_form ul
-{
+#mode_form ul,
+#add_item_form ul {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-#mode_form ul li, #add_item_form  ul li
-{
+#mode_form ul:after,
+#add_item_form ul:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+#add_item_form ul {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+}
+
+#add_item_form ul li {
+	margin: 0;
+}
+
+#mode_form ul li,
+#mode_form ul li.pull-right {
 	margin-left: 1em;
+	margin-right: 0;
 }
 
-.first_li
-{
-    margin-left: 0.2em !important;
+#mode_form ul li.pull-right {
+	margin-left: 0.5em;
 }
 
-#mode_form ul.dropdown-menu.inner, #add_item_form ul.dropdown-menu.inner
-{
+#add_item_form ul li.pull-right {
+	margin-left: auto;
+}
+
+#mode_form ul li:first-child,
+#add_item_form ul li:first-child {
+	margin-left: 0.2em;
+}
+
+#mode_form ul.dropdown-menu.inner,
+#add_item_form ul.dropdown-menu.inner {
 	margin-left: -1em !important;
 }
 
-#add_item_form
-{
-	background-color: #BBB;
+.first_li {
+	margin-left: 0.2em !important;
 }
 
-#register
-{
+#mode_form ul li.pull-right {
+	margin-left: 1em;
+}
+
+/* ===== Add item form — search bar row ===== */
+
+#add_item_form {
+	background-color: var(--color-bg-panel);
+	border-radius: 10px;
+	box-shadow: 0 1px 3px var(--color-shadow);
+	border: 1px solid var(--color-border);
+	margin: 0;
 	padding: 0;
-	border-collapse: collapse;	
 }
 
-#register th
-{	
-	background-color: #999;
-	padding: 5px;
-	text-align: center;
-	color: #FFF;
+#add_item_form ul li.pull-right {
+	margin-left: 1em;
 }
 
-#register td
-{
-	background-color: #EEE;
-	padding: 3px;
-	text-align: center;
+/* ===== Form controls (inputs, textareas, selects) ===== */
+
+.form-control.input-sm {
+	border-radius: 8px;
+	border: 1px solid var(--color-border-strong);
+	padding: 6px 10px;
+	font-size: 14px;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	background-color: var(--color-bg-panel);
+	color: var(--color-text);
+	transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+	height: 36px;
 }
 
-#overall_sale
-{
-	width: 29%;
-	float: left;
-	margin-left: 0.1em;
-	padding-bottom: 1em;
-	padding-top: 1em;
-	background-color: #BBB;
+.form-control.input-sm:focus {
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+	outline: none;
+	background-color: var(--color-bg-panel);
+}
+
+.form-control.input-sm:focus::-webkit-input-placeholder {
+	color: transparent;
+}
+
+.form-control.input-sm:focus::-moz-placeholder {
+	color: transparent;
+}
+
+.form-control.input-sm:focus::placeholder {
+	color: transparent;
+}
+
+/* Search inputs — height-matched with adjacent buttons */
+#add_item_form input.form-control.input-sm,
+#select_customer input.form-control.input-sm {
+	height: 40px;
+	padding: 8px 12px;
+	font-size: 14px;
+}
+
+/* Bootstrap-select dropdowns (Register Mode, payment type, etc.) */
+.selectpicker {
+	border-radius: 8px !important;
+	border: 1px solid var(--color-border-strong) !important;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+	font-size: 14px !important;
+	padding: 5px 10px !important;
+	color: var(--color-text) !important;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.selectpicker:focus,
+.selectpicker.show {
+	border-color: var(--color-primary) !important;
+	box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
+}
+
+/* Payment Type dropdown — clear visible border + full-width menu on open */
+.payment_type_dropdown,
+#mode_form .selectpicker,
+#mode_form .selectpicker:focus {
+	border: 1px solid var(--color-border-strong) !important;
+}
+
+/* Suspend sale button — visible border */
+#suspend_sale_button {
+	border: 1px solid var(--color-border-strong) !important;
+	border-color: var(--color-suspend) !important;
+}
+
+.payment_type_dropdown .dropdown-menu,
+.payment_type_dropdown .dropdown-menu .inner {
+	width: 100% !important;
+	max-width: none !important;
+	min-width: 100% !important;
+}
+
+/* Input group addons (currency symbol) */
+.input-group-addon {
+	border-radius: 8px 0 0 8px !important;
+	border: 1px solid var(--color-border-strong);
+	border-right: none;
+	background-color: var(--color-bg-muted);
+	color: var(--color-text-muted);
+	font-weight: 600;
+	padding: 6px 10px;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	font-size: 14px;
+}
+
+.input-group-addon b {
+	color: var(--color-text);
+}
+
+.input-group .form-control.input-sm {
+	border-radius: 0 8px 8px 0 !important;
+	border-left: none;
+	border-color: var(--color-border-strong);
+}
+
+.input-group.input-group-sm > .form-control.input-sm,
+.input-group.input-group-sm > .input-group-addon {
+	height: auto;
+}
+
+/* ===== Buttons ===== */
+
+#mode_form .btn,
+#add_item_form .btn,
+#overall_sale .btn,
+#buttons_sale .btn,
+#payment_details .btn {
+	border-radius: 8px;
+	font-weight: 500;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 	font-size: 13px;
-	text-align: center;
+	padding: 6px 14px;
+	transition: all 0.15s ease;
+	border: none;
 }
 
-#overall_sale .panel-body
-{
+/* Unified primary buttons (Daily Sales, New Item, New Customer) */
+#mode_form .btn-primary,
+.add_item_form .btn-info,
+#overall_sale .btn-info,
+.btn-primary,
+.btn-info {
+	background-color: var(--color-primary);
+	color: #ffffff;
+}
+
+.btn-primary:hover,
+.btn-info:hover {
+	background-color: var(--color-primary-hover);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 6px rgba(79, 70, 229, 0.15);
+}
+
+.btn-primary:focus,
+.btn-info:focus {
+	box-shadow: 0 0 0 3px var(--color-primary-focus);
+	outline: none;
+}
+
+/* Search bar button height alignment — match 40px input height */
+#add_item_form .pull-right .btn,
+#select_customer .btn {
+	height: 40px;
+	padding: 8px 16px;
+}
+
+#add_item_form .pull-right .btn .glyphicon,
+#select_customer .btn .glyphicon {
+	margin-right: 4px;
+}
+
+/* Success buttons (Complete Sale) */
+#buttons_sale .btn-success,
+.btn-success {
+	background-color: var(--color-success);
+	color: #ffffff;
+}
+
+.btn-success:hover {
+	background-color: var(--color-success-hover);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 6px rgba(22, 163, 74, 0.12);
+}
+
+.btn-success:focus {
+	box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
+	outline: none;
+}
+
+/* Ghost / outline buttons — secondary actions (Suspended, Sales Receipt) */
+#show_suspended_sales_button,
+.btn-default {
+	background-color: transparent;
+	color: var(--color-text-muted);
+	border: 1px solid var(--color-border);
+}
+
+#show_suspended_sales_button:hover,
+.btn-default:hover {
+	background-color: rgba(79, 70, 229, 0.05);
+	color: var(--color-primary);
+	border-color: var(--color-border-strong);
+	transform: translateY(-1px);
+}
+
+#show_suspended_sales_button:focus,
+.btn-default:focus {
+	box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+	outline: none;
+}
+
+/* Danger button (Cancel Sale) */
+.btn-danger {
+	background-color: var(--color-danger);
+	color: #ffffff;
+}
+
+.btn-danger:hover {
+	background-color: var(--color-danger-hover);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 6px rgba(220, 38, 38, 0.12);
+}
+
+.btn-danger:focus {
+	box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.3);
+	outline: none;
+}
+
+/* Remove customer button */
+#remove_customer_button {
+	background-color: var(--color-danger);
+	color: #ffffff;
+	font-weight: 500;
+	border: none;
+}
+
+#remove_customer_button:hover {
+	background-color: var(--color-danger-hover);
+	transform: translateY(-1px);
+}
+
+#remove_customer_button:focus {
+	box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.3);
+	outline: none;
+}
+
+/* Icon spacing in buttons */
+.btn .glyphicon {
+	margin-right: 4px;
+}
+
+/* ===== Register table (cart / payments) ===== */
+
+#register {
+	padding: 0;
+	border-collapse: separate;
+	border-spacing: 0;
+	width: 100%;
+	background: var(--color-bg-panel);
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 1px 3px var(--color-shadow);
+	border: 1px solid var(--color-border);
+	font-size: 14px;
+}
+
+#register th {
+	background-color: #f8fafc;
+	padding: 10px 8px;
+	text-align: center;
+	color: #334155;
+	font-weight: 500;
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	border: none;
+	border-bottom: 1px solid var(--color-border);
+}
+
+#register td {
+	background-color: var(--color-bg-panel);
+	padding: 8px 6px;
+	text-align: center;
+	border-bottom: 1px solid #f1f5f9;
+	vertical-align: middle;
+}
+
+#register tbody tr:nth-child(even) td {
+	background-color: #f8fafc;
+}
+
+#register tbody tr:hover td {
+	background-color: #eff6ff;
+}
+
+#register tbody tr:last-child td {
+	border-bottom: none;
+}
+
+#register .text-muted small {
+	color: #94a3b8;
+	font-weight: 400;
+}
+
+/* Empty cart state — intentional placeholder */
+#register tbody #cart_contents td .alert-info {
+	background-color: #f8fafc;
+	border: 2px dashed var(--color-border);
+	color: var(--color-text-muted);
+	text-align: center;
+	font-weight: 500;
+	padding: 28px 12px;
+	margin: 0;
+	border-radius: 8px;
+}
+
+/* Payments table inside payment_details */
+#payment_details table {
+	border-collapse: separate;
+	border-spacing: 0;
+	width: 100%;
+}
+
+#payment_details td {
+	padding: 6px 8px;
+	border-bottom: 1px solid #f1f5f9;
+}
+
+#payment_details td:last-child {
+	text-align: right;
+}
+
+#payment_details tr:last-child td {
+	border-bottom: none;
+}
+
+/* ===== Summary panel (overall_sale) ===== */
+
+#overall_sale {
+	background-color: var(--color-bg-panel);
+	border-radius: 10px;
+	box-shadow: 0 1px 3px var(--color-shadow);
+	border: 1px solid var(--color-border);
+}
+
+#overall_sale .panel-body {
 	padding-top: 0;
 	padding-bottom: 0;
 }
 
-#overall_sale .form-group
-{
+#overall_sale .form-group {
 	margin: 0;
 }
 
-#overall_sale .btn
-{
+#overall_sale .btn {
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
 }
 
-#payment_details, #buttons_sale, #suspended_sales_table
-{
+/* Customer selection — label on top, input + New Customer button beside on its own row */
+#select_customer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 8px;
+}
+
+#select_customer > label {
+	flex: 0 0 100%;
 	width: 100%;
-}
-
-.sales_table_100
-{
-	width: 100%;
-}
-
-#sale_totals, #payment_totals
-{
-	border-top: 1px solid #000;
-}
-
-input#amount_tendered:disabled
-{
-    display: none;
-}
-
-#payment_details
-{
-	float: left;
-	border-top: 1px solid #000;
-	background-color: #DDD;
-	margin-top: 0.2em;
-	padding: 0.5em;
 	text-align: left;
-	clear: both;
+	font-weight: 400;
+	color: #334155;
+	margin-bottom: 4px;
+	font-size: 13px;
 }
 
-.alert
-{
+#select_customer > input.form-control.input-sm {
+	flex: 1 1 0;
+	min-width: 140px;
+}
+
+#select_customer > .btn {
+	flex: 0 0 auto;
+	height: 36px;
+}
+
+/* ===== Totals tables ===== */
+
+.sales_table_100 {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+#sale_totals,
+#payment_totals {
+	border-top: none;
+	margin-top: 0.5em;
+	background-color: var(--color-bg-panel);
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+#sale_totals th,
+#payment_totals th {
+	padding: 10px 16px;
+	border-bottom: 1px solid var(--color-border);
+	font-weight: 400;
+	color: var(--color-text-muted);
+	font-size: 14px;
+}
+
+#sale_totals th:last-child,
+#payment_totals th:last-child {
+	text-align: right;
+}
+
+#sale_totals tr:last-child th,
+#payment_totals tr:last-child th {
+	border-bottom: none;
+}
+
+/* Prominent Total block — high-contrast dark card, pinned to bottom of card */
+#total_block tr:last-child th,
+#total_block tr > th[style*="150%"] {
+	background-color: #334159;
+	color: #f8fafc;
+	font-size: 150%;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+#payment_totals tr > th[style*="120%"] {
+	font-size: 120%;
+	font-weight: 400;
+	color: var(--color-text);
+}
+
+/* Currency / amount values — bold only for final Total and Amount Due */
+#sale_total,
+#sale_amount_due {
+	font-weight: 700;
+}
+
+/* ===== Payment details ===== */
+
+#payment_details {
+	/* Payment section spans full width — end-to-end across the card */
+	float: none;
+	clear: both;
+	width: 100%;
+	max-width: 100%;
+	border-top: 1px solid var(--color-border);
+	border-radius: 8px;
+	background-color: var(--color-bg-subtle);
+	margin-top: 0.5em;
+	padding: 0.75em;
+	text-align: left;
+	box-sizing: border-box;
+}
+
+#payment_details table.sales_table_100 {
+	margin-bottom: 0.5em;
+}
+
+#payment_details td {
+	padding: 8px 8px;
+}
+
+/* ===== Action buttons row (suspend, cancel, finish) ===== */
+
+#buttons_sale {
+	display: flex !important;
+	flex-direction: row !important;
+	justify-content: flex-start !important;
+	align-items: center !important;
+	gap: 10px !important;
+	overflow: visible !important;
+	padding: 10px 0 !important;
+}
+
+#buttons_sale .btn {
+	margin: 0 !important;
+	border-radius: 8px;
+	font-weight: 500;
+}
+
+#buttons_sale .pull-right,
+#buttons_sale .pull-left {
+	float: none !important;
+	margin: 0 !important;
+}
+
+/* Action buttons — horizontal group aligned on the side of the card */
+#buttons_sale #finish_sale_button,
+#buttons_sale #finish_invoice_quote_button,
+#buttons_sale #add_payment_button,
+#buttons_sale #add_payment_button.pull-right {
+	float: none !important;
+	display: inline-flex !important;
+	margin: 0 !important;
+	margin-left: auto !important;
+	margin-right: 0 !important;
+	width: fit-content !important;
+}
+
+/* Finish sale button — prominent green (success action) */
+#finish_sale_button,
+#finish_invoice_quote_button {
+	background-color: var(--color-success);
+	color: #ffffff;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 8px 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(22, 163, 74, 0.15);
+	border: none;
+}
+
+#finish_sale_button:hover,
+#finish_invoice_quote_button:hover {
+	background-color: var(--color-success-hover);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 8px rgba(22, 163, 74, 0.2);
+}
+
+#finish_sale_button:focus,
+#finish_invoice_quote_button:focus {
+	box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
+	outline: none;
+}
+
+/* Suspend sale button — amber */
+#suspend_sale_button {
+	background-color: var(--color-suspend);
+	color: #ffffff;
+	font-weight: 500;
+	border: none;
+}
+
+#suspend_sale_button:hover {
+	background-color: var(--color-suspend-hover);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 6px rgba(245, 158, 11, 0.12);
+}
+
+#suspend_sale_button:focus {
+	box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+	outline: none;
+}
+
+/* Cancel sale button — red */
+#cancel_sale_button {
+	background-color: var(--color-danger);
+	color: #ffffff;
+	font-weight: 500;
+	border: none;
+}
+
+#cancel_sale_button:hover {
+	background-color: var(--color-danger-hover);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 6px rgba(220, 38, 38, 0.12);
+}
+
+#cancel_sale_button:focus {
+	box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.3);
+	outline: none;
+}
+
+/* ===== Alerts ===== */
+
+.alert {
 	margin-bottom: 5px;
+	border-radius: 8px;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.alert-info {
+	background-color: #eff6ff;
+	border-color: #bae6fd;
+	color: #075985;
+}
+
+.alert-success {
+	background-color: #dcfce7;
+	border-color: #bbf7d0;
+	color: #166534;
+}
+
+.alert-danger {
+	background-color: #fee2e2;
+	border-color: #fecaca;
+	color: #991b1b;
+}
+
+.alert-warning {
+	background-color: #fffbeb;
+	border-color: #fed7aa;
+	color: #92400e;
+}
+
+/* ===== Disabled / hidden elements ===== */
+
+input#amount_tendered:disabled {
+	display: none;
+}
+
+/* ===== Checkbox labels ===== */
+
+.checkbox label {
+	font-weight: 400;
+	color: #475569;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	font-size: 13px;
+}
+
+/* Non-bold labels for register form sections */
+#register_wrapper .control-label,
+#overall_sale .control-label {
+	font-weight: 400 !important;
+	color: #334155;
+}
+
+/* Checkbox containers with clean borders */
+#mpesa_options .checkbox,
+#overall_sale .checkbox,
+#payment_details .checkbox {
+	border: 1px solid var(--color-border);
+	border-radius: 6px;
+	padding: 6px 10px;
+	margin-bottom: 6px;
+	background-color: var(--color-bg-panel);
+}
+
+#overall_sale .checkbox label,
+#payment_details .checkbox label {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0;
+	font-weight: 400;
+}
+
+/* ===== M-Pesa option sections ===== */
+.mpesa-option-section {
+	background-color: var(--color-bg-panel);
+	border-radius: 8px;
+	border: 1px solid var(--color-border);
+	margin-bottom: 10px;
+	padding: 12px;
+}
+
+#mpesa_verify_status {
+	border-radius: 8px;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+/* ===== Badge / tag elements — clean borders ===== */
+.badge,
+.label {
+	border-radius: 6px;
+	padding: 3px 8px;
+	font-weight: 500;
+	font-size: 12px;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	border: 1px solid var(--color-border-strong);
+}
+
+/* ===== Input group containers — clean borders ===== */
+.input-group {
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+/* ===== Checkbox containers — border + rounded corners ===== */
+#mpesa_options .checkbox,
+#overall_sale .checkbox {
+	border: 1px solid var(--color-border);
+	border-radius: 6px;
+	padding: 6px 10px;
+	margin-bottom: 6px;
+	background-color: var(--color-bg-panel);
+}
+
+#mpesa_options .checkbox label,
+#overall_sale .checkbox label {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0;
+	font-weight: 400;
+}
+
+#mpesa_options .checkbox input[type="checkbox"],
+#overall_sale .checkbox input[type="checkbox"] {
+	margin-right: 6px;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+
+/* ===== Comments & Checkbox section (Bottom of right panel) ===== */
+
+#overall_sale #comment_label {
+	text-align: left;
+	display: block;
+	font-weight: 400;
+	color: #334155;
+	font-size: 13px;
+	margin-bottom: 4px;
+}
+
+#overall_sale #comment.form-control.input-sm {
+	width: 100% !important;
+	box-sizing: border-box !important;
+	min-height: 60px;
+}
+
+/* Checkbox-inline rows (Print after Sale, Email receipt) */
+#overall_sale .container-fluid > .row:not(.no-gutter) {
+	display: flex !important;
+	flex-wrap: wrap !important;
+	gap: 0.5rem !important;
+	align-items: center !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+#overall_sale .container-fluid > .row:not(.no-gutter) .col-xs-6 {
+	flex: 0 0 auto !important;
+	width: auto !important;
+	max-width: none !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	margin-right: 16px !important;
+}
+
+#overall_sale .container-fluid > .row:not(.no-gutter) .col-xs-6:last-child {
+	margin-right: 0 !important;
+}
+
+/* Inline checkbox labels — clean, subtle row */
+#overall_sale .control-label.checkbox {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-weight: 400;
+	color: #334155;
+	font-size: 13px;
+	margin-bottom: 0;
+	cursor: pointer;
+}
+
+#overall_sale .control-label.checkbox input[type="checkbox"] {
+	width: 16px;
+	height: 16px;
+	margin-right: 4px;
+	cursor: pointer;
+}
+
+/* Invoice number input group in right panel */
+#overall_sale .input-group.input-group-sm {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+#overall_sale .input-group.input-group-sm .form-control.input-sm {
+	width: 100%;
+}
+
+/* ===== Checkout card layout refinements ===== */
+
+/* Payment section heading — "Items ready for payment" */
+.payment_section_label {
+	font-weight: 600;
+	font-size: 13px;
+	color: var(--color-text-heading);
+	margin-bottom: 8px;
+	display: block;
+}
+
+/* Payment detail tables span full width inside payment_details */
+#payment_details .sales_table_100 {
+	width: 100%;
+}
+
+#total_block {
+	margin-top: 0.75em;
+	border-radius: 8px;
+	overflow: hidden;
+	min-height: 56px;
+}
+
+#total_block th {
+	padding: 12px 16px;
 }

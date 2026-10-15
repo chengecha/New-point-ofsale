@@ -78,6 +78,8 @@ $(document).ready(function()
 
 <?php $this->load->view('partial/print_receipt', array('print_after_sale'=>false, 'selected_printer'=>'takings_printer')); ?>
 
+<div id="page_title"><?php echo $this->lang->line('cashups_daily_title'); ?></div>
+
 <div id="title_bar" class="print_hide btn-toolbar">
 	<button onclick="javascript:printdoc()" class='btn btn-info btn-sm pull-right'>
 		<span class="glyphicon glyphicon-print">&nbsp;</span><?php echo $this->lang->line('common_print'); ?>

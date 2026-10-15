@@ -98,6 +98,7 @@ $lang["sales_new_item"] = "New Item";
 $lang["sales_no_description"] = "No description";
 $lang["sales_no_filter"] = "All";
 $lang["sales_no_items_in_cart"] = "There are no Items in the cart";
+$lang["sales_payment_section"] = "Items ready for payment";
 $lang["sales_no_sales_to_display"] = "No Sales to display";
 $lang["sales_none_selected"] = "You have not selected any Sale(s) to delete";
 $lang["sales_nontaxed_ind"] = " ";
@@ -199,3 +200,5 @@ $lang["sales_work_order_number"] = "Work Order Number";
 $lang["sales_work_order_number_duplicate"] = "Work Order Number must be unique";
 $lang["sales_work_order_sent"] = "Work Order sent to";
 $lang["sales_work_order_unsent"] = "Work Order failed to be sent to";
+
+$lang["sales_overview_title"] = "Sales Overview";

@@ -276,8 +276,10 @@ body.topbar-hidden .wrapper {
 	margin-top: 35px;
 }
 
-/* Reduce left/right padding for sales and home modules to use more screen width */
+/* Reduce left/right padding for sales, receivings, cashups and home modules to use more screen width */
 .module-sales .wrapper > .container,
+.module-receivings .wrapper > .container,
+.module-cashups .wrapper > .container,
 .module-home .wrapper > .container {
 	padding-left: 20px;
 	padding-right: 20px;
@@ -291,6 +293,53 @@ body.topbar-hidden .wrapper {
 }
 .module-sales #overall_sale {
 	width: 26%;
+}
+
+/* Widen register content area on receivings module (mirrors sales layout) */
+.module-receivings #register_wrapper {
+	width: 73%;
+}
+.module-receivings #overall_sale {
+	width: 26%;
+}
+
+/* Cashup list table: full width, not centered */
+.module-cashups #table,
+.module-cashups #table_holder {
+	width: 100% !important;
+	max-width: 100% !important;
+}
+
+/* Sales / Suppliers / Items: containers span full width + tables expand */
+.module-sales .wrapper > .container,
+.module-suppliers .wrapper > .container,
+.module-items .wrapper > .container {
+	padding-left: 20px !important;
+	padding-right: 20px !important;
+	max-width: 100% !important;
+	width: 100% !important;
+}
+
+.module-sales #table,
+.module-sales #table_holder,
+.module-suppliers #table,
+.module-suppliers #table_holder,
+.module-items #table,
+.module-items #table_holder {
+	width: 100% !important;
+	max-width: 100% !important;
+}
+
+/* Page titles for manage tables */
+.module-cashups #page_title,
+.module-sales #page_title,
+.module-suppliers #page_title,
+.module-items #page_title {
+	font-size: 22px;
+	font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 400;
+	margin: 1rem 0 0.5rem;
+	color: var(--color-text);
 }
 
 /* Two-column form layout in modal dialogs: form groups float side-by-side */

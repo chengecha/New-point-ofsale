@@ -1,33 +1,172 @@
 /* Since flatly is the default theme, all css design should use flatly as the starting point. */
 /* Any css color attributes that need to be overridden for a particular theme */
-/* should be included in a css file file named. */
+/* should be included in a css file named after the theme. */
 
-.fixed-table-container tbody .selected td {
-	background-color:#757575
-}
+/* Darkly theme — dark-mode overrides for register screen */
 
-/* Receivings & Sales */
-
+/* Register table cells in dark theme */
 #register td {
-	background-color:#757575;
+	background-color: #2d3748;
 }
 
-#add_item_form,#overall_sale {
-	background-color:#757575
+#register tbody tr:nth-child(even) td {
+	background-color: #2d3748;
 }
 
-#mode_form,#payment_details {
-	background-color:#757575
+#register tbody tr:nth-child(odd) td {
+	background-color: #242933;
 }
 
-/* Reports > Graphical Reports */
-
-.ct-label {
-	fill:#eee;
-	color:#eee;
+#register tbody tr:hover td {
+	background-color: #4a5568;
 }
 
-text.ct-axis-title{
-	fill:#eee;
-	color:#eee;
+/* Register table header — light gray in dark theme for contrast */
+#register th {
+	background-color: #f8fafc;
+	color: #334155;
+	border-bottom-color: #4a5568;
+}
+
+/* Panel backgrounds in dark theme */
+#add_item_form {
+	background-color: #2d3748;
+	border-color: #4a5568;
+}
+
+#overall_sale {
+	background-color: #2d3748;
+	border-color: #4a5568;
+}
+
+#mode_form {
+	background-color: #2d3748;
+	border-color: #4a5568;
+}
+
+#payment_details {
+	background-color: #2d3748;
+	border-top-color: #4a5568;
+}
+
+/* Ghost button in dark theme (Suspended) */
+#show_suspended_sales_button,
+.btn-default {
+	background-color: transparent;
+	color: #cbd5e1;
+	border: 1px solid #4a5568;
+}
+
+#show_suspended_sales_button:hover,
+.btn-default:hover {
+	background-color: rgba(79, 70, 229, 0.1);
+	color: #a78bfa;
+	border-color: #718096;
+}
+
+/* Empty cart state in dark theme */
+#register tbody #cart_contents td .alert-info {
+	background-color: #2d3748;
+	border: 2px dashed #4a5568;
+	color: #94a3b8;
+}
+
+/* Totals tables in dark theme */
+#sale_totals,
+#payment_totals,
+#total_block {
+	background-color: #2d3748;
+}
+
+#sale_totals th,
+#payment_totals th,
+#total_block th {
+	border-bottom-color: #4a5568;
+	color: #cbd5e1;
+}
+
+/* Prominent Total block — dark card in dark theme */
+#total_block tr:last-child th,
+#total_block tr > th[style*="150%"] {
+	background-color: #334159;
+	color: #e2e8f0;
+}
+
+/* Total block text in dark theme */
+#total_block span,
+#total_block #sale_total {
+	color: #e2e8f0;
+}
+
+/* Checkbox containers in dark theme */
+#mpesa_options .checkbox,
+#overall_sale .checkbox {
+	background-color: #2d3748;
+	border: 1px solid #4a5568;
+}
+
+/* Customer selection — input beside New Customer button */
+#select_customer > input.form-control.input-sm {
+	background-color: #2d3748;
+	border-color: #4a5568;
+	color: #e2e8f0;
+}
+
+/* Input groups in dark theme */
+.input-group .input-group-addon {
+	background-color: #334159;
+	border-color: #4a5568;
+	color: #cbd5e1;
+}
+
+/* Form controls in dark theme */
+#overall_sale .form-control.input-sm,
+#payment_details .form-control.input-sm {
+	background-color: #2d3748;
+	border-color: #4a5568;
+	color: #e2e8f0;
+}
+
+/* Checkbox labels in dark theme */
+#overall_sale .control-label.checkbox {
+	color: #cbd5e1;
+}
+
+#overall_sale .control-label {
+	color: #cbd5e1;
+}
+
+/* Textarea in dark theme */
+#overall_sale #comment.form-control.input-sm {
+	background-color: #2d3748;
+	border-color: #4a5568;
+	color: #e2e8f0;
+}
+
+/* Sale totals row text in dark theme */
+#sale_totals span,
+#sale_amount_due {
+	color: #e2e8f0;
+}
+
+/* Tables selected state */
+.fixed-table-container tbody .selected td {
+	background-color: #4a5568;
+}
+
+/* Payment section heading in dark theme */
+.payment_section_label {
+	color: #cbd5e1;
+}
+
+/* Payment Type dropdown border — visible in dark theme */
+.payment_type_dropdown {
+	border: 1px solid #4a5568 !important;
+	background-color: #2d3748 !important;
+	color: #e2e8f0 !important;
+}
+
+.payment_type_dropdown .dropdown-toggle {
+	background-color: #2d3748 !important;
+	color: #e2e8f0 !important;
 }

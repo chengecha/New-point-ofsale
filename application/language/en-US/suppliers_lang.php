@@ -21,3 +21,5 @@ $lang["suppliers_supplier"] = "Supplier";
 $lang["suppliers_supplier_id"] = "Id";
 $lang["suppliers_tax_id"] = "Tax Pin";
 $lang["suppliers_update"] = "Update Supplier";
+
+$lang["suppliers_list_title"] = "Supplier List";

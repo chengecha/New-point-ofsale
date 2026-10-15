@@ -219,3 +219,5 @@ $lang["sales_email_error"] = "Error sending email. Please try again.";
 $lang["common_cancel"] = "Cancel";
 
 $lang["sales_new"] = "New Sale";
+
+$lang["sales_overview_title"] = "Sales Overview";

@@ -425,11 +425,6 @@ if(isset($success))
 			<?php
 			}
 			?>
-
-			<tr>
-				<th style="width: 55%; font-size: 150%"><?php echo $this->lang->line('sales_total'); ?></th>
-				<th style="width: 45%; font-size: 150%; text-align: right;"><span id="sale_total"><?php echo to_currency($total); ?></span></th>
-			</tr>
 		</table>
 
 		<?php
@@ -449,6 +444,7 @@ if(isset($success))
 			</table>
 
 			<div id="payment_details">
+				<div class="payment_section_label"><?php echo $this->lang->line('sales_payment_section'); ?></div>
 				<?php
 				// Show Complete sale button instead of Add Payment if there is no amount due left
 				if($payments_cover_total)
@@ -457,9 +453,9 @@ if(isset($success))
 					<?php echo form_open($controller_name."/add_payment", array('id'=>'add_payment_form', 'class'=>'form-horizontal')); ?>
 						<table class="sales_table_100">
 							<tr>
-								<td><?php echo $this->lang->line('sales_payment'); ?></td>
-								<td>
-									<?php echo form_dropdown('payment_type', $payment_options, $selected_payment_type, array('id'=>'payment_types', 'class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit', 'disabled'=>'disabled')); ?>
+								<td colspan="2">
+									<label for="payment_types" class="control-label" style="display:block;font-weight:400;color:#334155;font-size:13px;margin-bottom:4px;"><?php echo $this->lang->line('sales_payment'); ?></label>
+									<?php echo form_dropdown('payment_type', $payment_options, $selected_payment_type, array('id'=>'payment_types', 'class'=>'selectpicker show-menu-arrow payment_type_dropdown', 'data-style'=>'btn-default btn-sm', 'data-width'=>'100%', 'disabled'=>'disabled')); ?>
 								</td>
 							</tr>
 							<tr>
@@ -505,9 +501,9 @@ if(isset($success))
 						<input type="hidden" name="mpesa_option" id="mpesa_option" value="" />
 						<table class="sales_table_100">
 							<tr>
-								<td><?php echo $this->lang->line('sales_payment'); ?></td>
-								<td>
-									<?php echo form_dropdown('payment_type', $payment_options,  $selected_payment_type, array('id'=>'payment_types', 'class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit')); ?>
+								<td colspan="2">
+									<label for="payment_types" class="control-label" style="display:block;font-weight:400;color:#334155;font-size:13px;margin-bottom:4px;"><?php echo $this->lang->line('sales_payment'); ?></label>
+									<?php echo form_dropdown('payment_type', $payment_options,  $selected_payment_type, array('id'=>'payment_types', 'class'=>'selectpicker show-menu-arrow payment_type_dropdown', 'data-style'=>'btn-default btn-sm', 'data-width'=>'100%')); ?>
 								</td>
 							</tr>
 							<tr>
@@ -617,6 +613,21 @@ if(isset($success))
 				}
 				?>
 			</div>
+
+			<?php
+			// Only show the highlighted Total block if there are Items in the register
+			if(count($cart) > 0)
+			{
+			?>
+				<table class="sales_table_100" id="total_block">
+					<tr>
+						<th style="width: 55%; font-size: 150%"><?php echo $this->lang->line('sales_total'); ?></th>
+						<th style="width: 45%; font-size: 150%; text-align: right;"><span id="sale_total"><?php echo to_currency($total); ?></span></th>
+					</tr>
+				</table>
+			<?php
+			}
+			?>
 
 			<?php echo form_open($controller_name."/cancel", array('id'=>'buttons_form')); ?>
 				<div class="form-group" id="buttons_sale">

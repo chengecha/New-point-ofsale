@@ -52,3 +52,5 @@ $lang["cashups_successful_updating"] = "Cashup update successful";
 $lang["cashups_total"] = "Total";
 $lang["cashups_transfer_amount_cash"] = "In/Out Cash";
 $lang["cashups_update"] = "Update Cashup";
+
+$lang["cashups_daily_title"] = "Daily Cashups";

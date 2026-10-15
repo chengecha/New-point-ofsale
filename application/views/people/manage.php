@@ -68,6 +68,8 @@ $(document).ready(function()
 });
 </script>
 
+<div id="page_title"><?php echo $this->lang->line($controller_name.'_list_title'); ?></div>
+
 <div id="title_bar" class="btn-toolbar">
 	<?php
 	if ($controller_name == 'customers')
