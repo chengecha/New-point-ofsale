@@ -559,3 +559,24 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Configuration Access Authentication
+|--------------------------------------------------------------------------
+|
+| These settings control the additional authentication gate that protects
+| sensitive configuration sections (e.g. the Integrations panel with API
+| keys and credentials).
+|
+| Authentication method (checked in order):
+|   1. CONFIG_ADMIN_PIN — a simple admin PIN set via environment variable
+|   2. Password — validated against the currently logged-in employee's
+|      password stored in the database (no env var needed)
+|
+| The timeout (in seconds) determines how long a session remains valid
+| after the initial successful authentication. When the timeout elapses
+| the user must re-authenticate.
+|
+*/
+$config['config_auth_timeout'] = (int) (getenv('CONFIG_AUTH_TIMEOUT') ?: 900);

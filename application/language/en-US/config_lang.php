@@ -330,5 +330,12 @@ $lang["config_use_destination_based_tax"] = "Use Destination Based Tax";
 $lang["config_user_timezone"] = "Local Timezone:";
 $lang["config_website"] = "Website";
 $lang["config_work_order_enable"] = "Work Order Support";
+
+$lang["config_social_media"] = "Social Media";
+$lang["config_social_facebook"] = "Facebook URL";
+$lang["config_social_twitter"] = "Twitter / X URL";
+$lang["config_social_instagram"] = "Instagram URL";
+$lang["config_social_tiktok"] = "TikTok URL";
+$lang["config_social_linkedin"] = "LinkedIn URL";
 $lang["config_work_order_format"] = "Work Order Format";
 $lang["config_work_order_email_message"] = "Work Order Email Template";

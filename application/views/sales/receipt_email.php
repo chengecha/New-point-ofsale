@@ -204,6 +204,35 @@
 		<?php echo nl2br($this->config->item('return_policy')); ?>
 	</div>
 
+	<?php
+	$has_social = !empty($this->config->item('social_facebook')) ||
+		!empty($this->config->item('social_twitter')) ||
+		!empty($this->config->item('social_instagram')) ||
+		!empty($this->config->item('social_tiktok')) ||
+		!empty($this->config->item('social_linkedin'));
+
+	if ($has_social):
+	?>
+		<div id="social_links" style="text-align:center; margin: 15px 0; font-size: 14px;">
+			<span style="margin: 0 8px;">Connect with us:</span>
+			<?php if (!empty($this->config->item('social_facebook'))): ?>
+				<a href="<?php echo $this->config->item('social_facebook'); ?>" style="margin: 0 5px; text-decoration: none; color: #1877F2;">Facebook</a>
+			<?php endif; ?>
+			<?php if (!empty($this->config->item('social_twitter'))): ?>
+				<a href="<?php echo $this->config->item('social_twitter'); ?>" style="margin: 0 5px; text-decoration: none; color: #1DA1F2;">Twitter</a>
+			<?php endif; ?>
+			<?php if (!empty($this->config->item('social_instagram'))): ?>
+				<a href="<?php echo $this->config->item('social_instagram'); ?>" style="margin: 0 5px; text-decoration: none; color: #E4405F;">Instagram</a>
+			<?php endif; ?>
+			<?php if (!empty($this->config->item('social_tiktok'))): ?>
+				<a href="<?php echo $this->config->item('social_tiktok'); ?>" style="margin: 0 5px; text-decoration: none; color: #000000;">TikTok</a>
+			<?php endif; ?>
+			<?php if (!empty($this->config->item('social_linkedin'))): ?>
+				<a href="<?php echo $this->config->item('social_linkedin'); ?>" style="margin: 0 5px; text-decoration: none; color: #0A66C2;">LinkedIn</a>
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
+
 	<br>
 
 	<div id="barcode" style="text-align:center">

@@ -1070,6 +1070,66 @@ class Sales extends Secure_Controller
 		$this->sale_lib->clear_all();
 	}
 
+	/**
+	 * Build the {{VARIABLE}} data map for the master email layout,
+	 * customised per email type (receipt, invoice, quote, work_order).
+	 *
+	 * @param string $type       Email type key
+	 * @param array  $sale_data  Sale data from _load_sale_data()
+	 * @return array             Map of {{VARIABLE}} => value
+	 */
+	private function _get_email_layout_data($type, $sale_data)
+	{
+		$company       = $this->config->item('company');
+		$company_email = $this->config->item('email');
+		$company_phone = $this->config->item('phone');
+
+		$greetings = [
+			'receipt'    => $this->lang->line('sales_email_greeting_receipt') ?: 'Thank you for your purchase! Here is your receipt.',
+			'invoice'    => $this->lang->line('sales_email_greeting_invoice') ?: 'Please find your invoice details below.',
+			'quote'      => $this->lang->line('sales_email_greeting_quote') ?: 'Please find your quote details below.',
+			'work_order' => $this->lang->line('sales_email_greeting_work_order') ?: 'Please find your work order details below.',
+		];
+
+		$cta_labels = [
+			'receipt'    => $this->lang->line('sales_email_cta_receipt') ?: 'View Receipt Online',
+			'invoice'    => $this->lang->line('sales_email_cta_invoice') ?: 'View Invoice Online',
+			'quote'      => $this->lang->line('sales_email_cta_quote') ?: 'View Quote Online',
+			'work_order' => $this->lang->line('sales_email_cta_work_order') ?: 'View Work Order Online',
+		];
+
+		$preheaders = [
+			'receipt'    => $this->lang->line('sales_email_preheader_receipt') ?: 'Your receipt from ' . $company . '.',
+			'invoice'    => $this->lang->line('sales_email_preheader_invoice') ?: 'Your invoice from ' . $company . '.',
+			'quote'      => $this->lang->line('sales_email_preheader_quote') ?: 'Your quote from ' . $company . '.',
+			'work_order' => $this->lang->line('sales_email_preheader_work_order') ?: 'Your work order from ' . $company . '.',
+		];
+
+		$greeting  = $greetings[$type] ?? $greetings['receipt'];
+		$cta_text  = $cta_labels[$type] ?? $cta_labels['receipt'];
+		$preheader = $preheaders[$type] ?? $preheaders['receipt'];
+
+		$sale_id = $sale_data['sale_id_num'] ?? $sale_data['sale_id'] ?? '';
+
+		$cta_links = [
+			'receipt'    => site_url('sales/receipt/' . $sale_id),
+			'invoice'    => site_url('sales/invoice/' . $sale_id),
+			'quote'      => site_url('sales/quote/' . $sale_id),
+			'work_order' => site_url('sales/work_order/' . $sale_id),
+		];
+		$cta_link = $cta_links[$type] ?? $cta_links['receipt'];
+
+		return [
+			'{{GREETING}}'              => $greeting,
+			'{{CALL_TO_ACTION_BUTTON}}' => $cta_text,
+			'{{CTA_LINK}}'              => $cta_link,
+			'{{PREHEADER_TEXT}}'        => $preheader,
+			'{{COMPANY_NAME}}'          => $company ?: 'Company Name',
+			'{{SUPPORT_EMAIL}}'         => $company_email ?: 'support@example.com',
+			'{{SUPPORT_PHONE}}'         => $company_phone ?: '',
+		];
+	}
+
 	public function send_email_modal()
 	{
 		$sale_id = $this->input->post('sale_id');
@@ -1108,6 +1168,10 @@ class Sales extends Secure_Controller
 			}
 
 			$this->load->library('email_lib');
+			$this->load->library('email_layout');
+
+			$message = $this->email_layout->render($message, $this->_get_email_layout_data($type, ['sale_id' => $sale_id]));
+
 			$result = $this->email_lib->sendEmail($to, $subject, $message, $attachments, $cc, $bcc);
 
 			$message_text = $this->lang->line($result ? 'sales_email_sent' : 'sales_email_unsent') . ' ' . $to;

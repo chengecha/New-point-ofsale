@@ -5,6 +5,9 @@
 	<base href="<?php echo base_url();?>" />
 	<title><?php echo $this->config->item('company') . ' | ' . $this->lang->line('common_powered_by') . ' Fluxwave POS ' . $this->config->item('application_version') ?></title>
 	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<?php echo 'dist/bootswatch/' . (empty($this->config->item('theme')) ? 'flatly' : $this->config->item('theme')) . '/bootstrap.min.css' ?>"/>
 
 	<?php if ($this->input->cookie('debug') == 'true' || $this->input->get('debug') == 'true') : ?>
@@ -75,7 +78,7 @@
 		<![endif]-->
 		<!-- start mincss template tags -->
 		<link rel="stylesheet" type="text/css" href="dist/jquery-ui/jquery-ui.min.css"/>
-		<link rel="stylesheet" type="text/css" href="dist/opensourcepos.min.css?rel=542232423a"/>
+		<link rel="stylesheet" type="text/css" href="dist/opensourcepos.min.css?rel=e39a5f67c8"/>
 		<!-- end mincss template tags -->
 
 		<!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -85,7 +88,6 @@
 
 		<!-- start minjs template tags -->
 		<script type="text/javascript" src="dist/opensourcepos.min.js?rel=3c7af00bab"></script>
-		<script type="text/javascript" src="bower_components/js-cookie/src/js.cookie.js"></script>
 		<!-- end minjs template tags -->
 	<?php endif; ?>
 
@@ -118,8 +120,10 @@
 			margin-top: 35px;
 		}
 
-		/* Reduce left/right padding for sales and home modules to use more screen width */
+		/* Reduce left/right padding for sales, receivings, cashups and home modules to use more screen width */
 		.module-sales .wrapper > .container,
+		.module-receivings .wrapper > .container,
+		.module-cashups .wrapper > .container,
 		.module-home .wrapper > .container {
 			padding-left: 20px !important;
 			padding-right: 20px !important;
@@ -132,6 +136,14 @@
 			width: 73% !important;
 		}
 		.module-sales #overall_sale {
+			width: 26% !important;
+		}
+
+		/* Widen register content area on receivings module (mirrors sales layout) */
+		.module-receivings #register_wrapper {
+			width: 73% !important;
+		}
+		.module-receivings #overall_sale {
 			width: 26% !important;
 		}
 

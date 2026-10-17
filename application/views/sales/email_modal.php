@@ -10,11 +10,11 @@
             <form id="emailForm" enctype="multipart/form-data">
                 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                  <style>
-                #emailModal label { font-size: 0.85rem; }
-                #emailModal .form-control, #emailModal .form-control-file { font-size: 0.85rem; padding: 2px 6px; height: auto; }
-                #emailModal textarea.form-control { padding: 2px 6px; }
+                #emailModal label { font-size: 1.15rem; }
+                #emailModal .form-control, #emailModal .form-control-file { font-size: 1rem; padding: 6px 10px; height: auto; }
+                #emailModal textarea.form-control { padding: 6px 10px; font-size: 0.95rem; }
                 #emailModal .form-group { margin-bottom: 0.5rem; }
-                #emailModal .form-text { font-size: 0.75rem; }
+                #emailModal .form-text { font-size: 0.9rem; }
                 #emailLoadingOverlay {
                     display: none;
                     position: fixed;
@@ -57,7 +57,7 @@
                     </div>
                     <div class="form-group">
                         <label for="email_message"><?php echo $this->lang->line('sales_email_message'); ?></label>
-                        <textarea class="form-control input-sm" id="email_message" name="message" rows="8" required><?php echo $message; ?></textarea>
+                        <textarea class="form-control" id="email_message" name="message" rows="8" required><?php echo htmlspecialchars($message); ?></textarea>
                     </div>
                     <div class="form-group">
                         <label for="email_attachments"><?php echo $this->lang->line('sales_email_attachments'); ?></label>

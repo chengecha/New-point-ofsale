@@ -13,6 +13,138 @@ class Config extends Secure_Controller
 	}
 
 	/*
+	 * Configuration access authentication (admin PIN from env or password from DB)
+	 * Credentials are read from environment variables so they are never stored
+	 * in source control. The password fallback uses the logged-in employee's
+	 * existing credentials from the database.
+	 */
+	private function _get_config_auth_credentials()
+	{
+		return array(
+			'pin' => (string) getenv('CONFIG_ADMIN_PIN')
+		);
+	}
+
+	/*
+	 * AJAX endpoint: verify the logged-in employee's password (or a config
+	 * admin PIN from environment variables) and establish a temporary
+	 * server-side session so subsequent save actions remain authenticated.
+	 *
+	 * Only a password / PIN is required — the username is taken from the
+	 * current session so the user does not need to re-enter it.
+	 */
+	public function verify_config_auth()
+	{
+		$password = $this->input->post('password');
+		$pin      = $this->input->post('pin');
+
+		$expected = $this->_get_config_auth_credentials();
+
+		$authed = FALSE;
+
+		// Check env-var PIN if configured
+		if (!empty($expected['pin']))
+		{
+			if (!empty($pin) && hash_equals($expected['pin'], $pin))
+			{
+				$authed = TRUE;
+			}
+		}
+
+		// Fallback / primary: validate password against the logged-in employee
+		if (!$authed && !empty($password))
+		{
+			$logged_in_employee_info = $this->Employee->get_logged_in_employee_info();
+			$username = $logged_in_employee_info ? $logged_in_employee_info->username : '';
+
+			if (!empty($username) && $this->Employee->check_password($username, $password))
+			{
+				$authed = TRUE;
+			}
+		}
+
+		if ($authed)
+		{
+			$this->load->library('session');
+			$this->session->set_userdata('config_authed', TRUE);
+			$this->session->set_userdata('config_authed_at', time());
+
+			json_log('config_auth_success', ['username' => $username ?? 'pin']);
+
+			echo json_encode(array(
+				'success' => TRUE,
+				'message' => $this->lang->line('config_auth_submit')
+			));
+		}
+		else
+		{
+			json_log('config_auth_failed', ['username' => $username ?? 'pin']);
+
+			echo json_encode(array(
+				'success' => FALSE,
+				'message' => $this->lang->line('config_auth_invalid_credentials')
+			));
+		}
+	}
+
+	/*
+	 * Determine whether the current session has valid configuration auth.
+	 */
+	private function _is_config_authenticated()
+	{
+		$authed = $this->session->userdata('config_authed');
+		$authed_at = $this->session->userdata('config_authed_at');
+
+		if ($authed && $authed_at)
+		{
+			$timeout = (int) $this->config->item('config_auth_timeout');
+			if ((time() - (int) $authed_at) <= $timeout)
+			{
+				return TRUE;
+			}
+			$this->_clear_config_auth();
+		}
+
+		return FALSE;
+	}
+
+	/*
+	 * Clear the configuration auth session flag.
+	 */
+	private function _clear_config_auth()
+	{
+		$this->session->unset_userdata('config_authed');
+		$this->session->unset_userdata('config_authed_at');
+	}
+
+	/*
+	 * AJAX endpoint: explicitly clear the config auth session.
+	 */
+	public function clear_config_auth()
+	{
+		$this->_clear_config_auth();
+
+		echo json_encode(array('success' => TRUE));
+	}
+
+	/*
+	 * Guard called at the top of every sensitive save method.
+	 * Outputs a JSON error and returns FALSE when not authenticated.
+	 */
+	private function _require_config_auth()
+	{
+		if (!$this->_is_config_authenticated())
+		{
+			echo json_encode(array(
+				'success' => FALSE,
+				'message' => $this->lang->line('config_auth_timeout')
+			));
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+	/*
 	 * This function loads all the licenses starting with the first one being Fluxwave POS one
 	 */
 	private function _licenses()
@@ -246,11 +378,18 @@ class Config extends Secure_Controller
 		$data['mpesa']['query_status_url'] = $this->config->item('mpesa_query_status_url');
 		$data['mpesa']['ais_url'] = $this->config->item('mpesa_ais_url');
 
+		$data['config_authed'] = $this->_is_config_authenticated();
+
 		$this->load->view("configs/manage", $data);
 	}
 
 	public function save_info()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$upload_success = $this->_handle_logo_upload();
 		$upload_data = $this->upload->data();
 
@@ -261,7 +400,12 @@ class Config extends Secure_Controller
 			'email' => $this->input->post('email'),
 			'fax' => $this->input->post('fax'),
 			'website' => $this->input->post('website'),
-			'return_policy' => $this->input->post('return_policy')
+			'return_policy' => $this->input->post('return_policy'),
+			'social_facebook' => $this->input->post('social_facebook'),
+			'social_twitter' => $this->input->post('social_twitter'),
+			'social_instagram' => $this->input->post('social_instagram'),
+			'social_tiktok' => $this->input->post('social_tiktok'),
+			'social_linkedin' => $this->input->post('social_linkedin')
 		);
 
 		if(!empty($upload_data['orig_name']))
@@ -286,6 +430,11 @@ class Config extends Secure_Controller
 
 	public function save_general()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$batch_save_data = array(
 			'theme' => $this->input->post('theme'),
 			'login_form' => $this->input->post('login_form'),
@@ -378,6 +527,11 @@ class Config extends Secure_Controller
 
 	public function save_locale()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$exploded = explode(":", $this->input->post('language'));
 		$batch_save_data = array(
 			'currency_symbol' => $this->input->post('currency_symbol'),
@@ -411,6 +565,11 @@ class Config extends Secure_Controller
 
 	public function save_email()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$password = '';
 
 		if($this->_check_encryption())
@@ -440,6 +599,11 @@ class Config extends Secure_Controller
 
 	public function save_message()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$password = '';
 
 		if($this->_check_encryption())
@@ -468,6 +632,11 @@ class Config extends Secure_Controller
 	 */
 	public function ajax_test_mpesa_connection()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$this->load->library('mpesa_lib');
 
 		// Temporarily override config items with posted values
@@ -491,6 +660,11 @@ class Config extends Secure_Controller
 
 	public function save_mpesa()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$consumer_key = '';
 		$consumer_secret = '';
 
@@ -570,6 +744,11 @@ class Config extends Secure_Controller
 
 	public function save_locations()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$this->db->trans_start();
 
 		$not_to_delete = array();
@@ -614,6 +793,11 @@ class Config extends Secure_Controller
 
 	public function save_tables()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$this->db->trans_start();
 
 		$dinner_table_enable = $this->input->post('dinner_table_enable') != NULL;
@@ -663,6 +847,11 @@ class Config extends Secure_Controller
 
 	public function save_tax()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$this->db->trans_start();
 
 		$use_destination_based_tax = $this->input->post('use_destination_based_tax') != NULL;
@@ -703,6 +892,11 @@ class Config extends Secure_Controller
 
 	public function save_rewards()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$this->db->trans_start();
 
 		$customer_reward_enable = $this->input->post('customer_reward_enable') != NULL;
@@ -762,6 +956,11 @@ class Config extends Secure_Controller
 
 	public function save_barcode()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$batch_save_data = array(
 			'barcode_type' => $this->input->post('barcode_type'),
 			'barcode_width' => $this->input->post('barcode_width'),
@@ -791,6 +990,11 @@ class Config extends Secure_Controller
 
 	public function save_receipt()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$batch_save_data = array (
 			'receipt_template' => $this->input->post('receipt_template'),
 			'receipt_font_size' => $this->input->post('receipt_font_size'),
@@ -823,6 +1027,11 @@ class Config extends Secure_Controller
 
 	public function save_invoice()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$batch_save_data = array (
 			'invoice_enable' => $this->input->post('invoice_enable') != NULL,
 			'sales_invoice_format' => $this->input->post('sales_invoice_format'),
@@ -867,6 +1076,11 @@ class Config extends Secure_Controller
 
 	public function remove_logo()
 	{
+		if(!$this->_require_config_auth())
+		{
+			return;
+		}
+
 		$result = $this->Appconfig->batch_save(array('company_logo' => ''));
 
 		echo json_encode(array('success' => $result));

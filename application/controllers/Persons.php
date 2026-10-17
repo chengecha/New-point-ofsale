@@ -107,6 +107,18 @@ public function email_modal($person_id = NULL)
 			}
 
 			$this->load->library('email_lib');
+
+			// Wrap the user's message inside the responsive master email layout.
+			// The email subject is used as the greeting instead of a personalized "Hello".
+			$this->load->library('email_layout');
+
+			$message = $this->email_layout->render($message, [
+				'{{GREETING}}'              => $subject,
+				'{{CALL_TO_ACTION_BUTTON}}' => $this->lang->line('sales_email_cta_person') ?: 'Visit Our Website',
+				'{{CTA_LINK}}'              => $this->config->item('website') ?: site_url(),
+				'{{PREHEADER_TEXT}}'        => $subject,
+			]);
+
 			$result = $this->email_lib->sendEmail($to, $subject, $message, $attachments, $cc, $bcc);
 
 			$message_text = $this->lang->line($result ? 'sales_email_sent' : 'sales_email_unsent') . ' ' . $to;

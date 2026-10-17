@@ -216,6 +216,24 @@ $lang["sales_email_send"] = "Send Email";
 $lang["sales_email_sent"] = "Email sent to";
 $lang["sales_email_unsent"] = "Email failed to be sent to";
 $lang["sales_email_error"] = "Error sending email. Please try again.";
+
+$lang["sales_email_greeting_receipt"] = "Thank you for your purchase! Here is your receipt.";
+$lang["sales_email_greeting_invoice"] = "Please find your invoice details below.";
+$lang["sales_email_greeting_quote"] = "Please find your quote details below.";
+$lang["sales_email_greeting_work_order"] = "Please find your work order details below.";
+$lang["sales_email_greeting_general"] = "Hello,";
+
+$lang["sales_email_cta_receipt"] = "View Receipt Online";
+$lang["sales_email_cta_invoice"] = "View Invoice Online";
+$lang["sales_email_cta_quote"] = "View Quote Online";
+$lang["sales_email_cta_work_order"] = "View Work Order Online";
+$lang["sales_email_cta_person"] = "Visit Our Website";
+
+$lang["sales_email_preheader_receipt"] = "Your receipt is ready.";
+$lang["sales_email_preheader_invoice"] = "Your invoice is ready.";
+$lang["sales_email_preheader_quote"] = "Your quote is ready.";
+$lang["sales_email_preheader_work_order"] = "Your work order is ready.";
+
 $lang["common_cancel"] = "Cancel";
 
 $lang["sales_new"] = "New Sale";

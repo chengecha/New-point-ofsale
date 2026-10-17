@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>{{COMPANY_NAME}}</title>
+	<style type="text/css">
+		/* Prevent auto-shrink on iOS */
+		#__additional { display: none !important; }
+
+		/* Outlook, Hotmail */
+		#outlook a { padding: 0; }
+		.ReadMsgBody { width: 100%; }
+		.ExternalClass { width: 100%; }
+		.ExternalClass, .ReadMsgBody { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+
+		/* Reset */
+		body { margin: 0 !important; padding: 0 !important; }
+
+		/* Images */
+		img { -ms-interpolation-mode: bicubic; }
+
+		/* Table spacing */
+		table td { border-collapse: collapse; }
+
+		/* Prevent line-height issues */
+		p, div, ul, ol, li { margin: 0; padding: 0; }
+
+		/* Mobile styles */
+		@media only screen and (max-width: 600px) {
+			.wrapper {
+				width: 100% !important;
+			}
+			.content-cell {
+				padding: 15px !important;
+			}
+			.content-cell-wide {
+				padding: 0 15px 20px !important;
+			}
+			.button-cell {
+				padding: 15px !important;
+			}
+			.button-text {
+				font-size: 16px !important;
+				padding: 12px 28px !important;
+			}
+			.footer-cell {
+				padding: 25px !important;
+			}
+			.social-icon {
+				width: 36px !important;
+				height: 36px !important;
+			}
+			.greeting-text {
+				font-size: 18px !important;
+			}
+		}
+
+		/* Dark mode support */
+		@media (prefers-color-scheme: dark) {
+			body { background-color: #121212 !important; }
+			.wrapper { background-color: #1a1a1a !important; }
+			.content-area { background-color: #1a1a1a !important; }
+			.footer-area { background-color: #222222 !important; }
+			.footer-text { color: #b3b3b3 !important; }
+			.body-text { color: #e0e0e0 !important; }
+			.greeting-text { color: #f0f0f0 !important; }
+		}
+	</style>
+	<!--[if mso]>
+	<style type="text/css">
+		.body-text, .greeting-text, .footer-text { font-family: Arial, sans-serif !important; }
+	</style>
+	<![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, Helvetica, sans-serif;">
+
+	<!-- Preheader / Inbox preview text (hidden visually) -->
+	<div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; color: #ffffff; background-color: #ffffff; mso-hide: all;">
+		{{PREHEADER_TEXT}}
+	</div>
+	<div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; color: #ffffff;">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</div>
+
+	<!-- Main background table -->
+	<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4;">
+		<tr>
+			<td align="center">
+
+				<!-- 600px centered wrapper -->
+				<table class="wrapper" role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="width: 100%; max-width: 600px; background-color: #ffffff; border-radius: 8px;">
+
+					<!-- ===== Header: Logo ===== -->
+					<tr>
+						<td align="center" style="padding: 35px 30px 25px;">
+							<img src="{{LOGO_URL}}"
+								alt="{{COMPANY_NAME}}"
+								width="150"
+								height="50"
+								border="0"
+								style="display: block; margin: 0 auto; font-size: 16px;" />
+						</td>
+					</tr>
+
+					<!-- ===== Greeting ===== -->
+					<tr>
+						<td class="content-cell" style="padding: 0 40px 20px;">
+							<p class="greeting-text" style="margin: 0; font-size: 20px; font-weight: bold; color: #333333; line-height: 1.4;">
+								{{GREETING}}
+							</p>
+						</td>
+					</tr>
+
+					<!-- ===== Message Body ===== -->
+					<tr>
+						<td class="content-cell" style="padding: 0 40px 5px;">
+							<div class="body-text" style="font-size: 16px; line-height: 1.5; color: #333333;">
+								{{MESSAGE_BODY}}
+							</div>
+						</td>
+					</tr>
+
+					<!-- ===== Call-to-Action Button (Bulletproof) ===== -->
+					<tr>
+						<td class="button-cell" align="center" style="padding: 5px 40px 35px;">
+							<table align="center" role="presentation" width="auto" border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+								<tbody>
+									<tr>
+										<td align="center" bgcolor="#2563eb" style="border-radius: 6px;">
+											<!--[if mso]>
+											<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:240px;">
+												<w:anchorlock/>
+												<center style="color:#ffffff;font-weight:bold;">
+											<![endif]-->
+											<a href="{{CTA_LINK}}"
+												target="_blank"
+												class="button-text"
+												style="background-color:#2563eb;border-radius:6px;color:#ffffff;display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;line-height:1.5;text-decoration:none;padding:14px 32px;mso-padding-alt:0;mso-text-raise:0;">
+												{{CALL_TO_ACTION_BUTTON}}
+											</a>
+											<!--[if mso]>
+												</center>
+											</v:roundrect>
+											<![endif]-->
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+
+					<!-- ===== Footer ===== -->
+					<tr>
+						<td class="footer-area" style="padding: 30px; background-color: #f8f9fa; font-size: 14px; line-height: 1.5; color: #666666;">
+							<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+
+								<!-- Support contact -->
+								<tr>
+									<td align="center" class="footer-text" style="padding-bottom: 20px;">
+										<p style="margin: 0;">
+											Need help? Email
+											<a href="mailto:{{SUPPORT_EMAIL}}"
+												style="color: #2563eb; text-decoration: underline;">{{SUPPORT_EMAIL}}</a>
+											or call {{SUPPORT_PHONE}}
+										</p>
+									</td>
+								</tr>
+
+								<!-- Social media icons -->
+								<tr>
+									<td align="center" style="padding-bottom: 20px;">
+										<table role="presentation" border="0" cellspacing="0" cellpadding="0">
+											<tr>
+												<td style="padding: 0 5px;">
+													<a href="{{SOCIAL_FACEBOOK}}" target="_blank">
+														<img src="https://via.placeholder.com/40/1877F2/FFFFFF?text=F"
+															alt="Facebook"
+															width="40"
+															height="40"
+															border="0"
+															class="social-icon"
+															style="display: block; border: 0;" />
+													</a>
+												</td>
+												<td style="padding: 0 5px;">
+													<a href="{{SOCIAL_TWITTER}}" target="_blank">
+														<img src="https://via.placeholder.com/40/1DA1F2/FFFFFF?text=T"
+															alt="Twitter / X"
+															width="40"
+															height="40"
+															border="0"
+															class="social-icon"
+															style="display: block; border: 0;" />
+													</a>
+												</td>
+												<td style="padding: 0 5px;">
+													<a href="{{SOCIAL_INSTAGRAM}}" target="_blank">
+														<img src="https://via.placeholder.com/40/E4405F/FFFFFF?text=IG"
+															alt="Instagram"
+															width="40"
+															height="40"
+															border="0"
+															class="social-icon"
+															style="display: block; border: 0;" />
+													</a>
+												</td>
+												<td style="padding: 0 5px;">
+													<a href="{{SOCIAL_TIKTOK}}" target="_blank">
+														<img src="https://via.placeholder.com/40/000000/FFFFFF?text=TK"
+															alt="TikTok"
+															width="40"
+															height="40"
+															border="0"
+															class="social-icon"
+															style="display: block; border: 0;" />
+													</a>
+												</td>
+												<td style="padding: 0 5px;">
+													<a href="{{SOCIAL_LINKEDIN}}" target="_blank">
+														<img src="https://via.placeholder.com/40/0A66C2/FFFFFF?text=L"
+															alt="LinkedIn"
+															width="40"
+															height="40"
+															border="0"
+															class="social-icon"
+															style="display: block; border: 0;" />
+													</a>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+
+								<!-- Physical mailing address -->
+								<tr>
+									<td align="center" class="footer-text" style="padding-bottom: 15px;">
+										<p style="margin: 0; font-size: 13px;">
+											{{COMPANY_NAME}}<br />
+											{{COMPANY_ADDRESS}}
+										</p>
+									</td>
+								</tr>
+
+								<!-- Copyright & preference links -->
+								<tr>
+									<td align="center" class="footer-text" style="padding-top: 10px; border-top: 1px solid #e0e0e0;">
+										<p style="margin: 0 0 12px; font-size: 13px;">
+											&copy; {{YEAR}} {{COMPANY_NAME}}. All rights reserved.
+										</p>
+										<p style="margin: 0;">
+											<a href="{{UNSUBSCRIBE_LINK}}"
+												style="color: #2563eb; text-decoration: underline;">Unsubscribe</a>
+											&nbsp;|&nbsp;
+											<a href="{{PREFERENCES_LINK}}"
+												style="color: #2563eb; text-decoration: underline;">Preferences</a>
+										</p>
+									</td>
+								</tr>
+
+							</table>
+						</td>
+					</tr>
+
+				</table>
+				<!-- End 600px wrapper -->
+
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>

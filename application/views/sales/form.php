@@ -1,3 +1,12 @@
+<?php
+function clean_lang_line($line) {
+	if(strpos($line, ' (TBD)') !== false) {
+		return false;
+	}
+	return $line;
+}
+?>
+
 <div id="required_fields_message"><?php echo $this->lang->line('common_fields_required_message') ?: 'Required Fields'; ?></div>
 
 <ul id="error_message_box" class="error_message_box"></ul>
@@ -7,29 +16,30 @@
 <div class="sales-tabs-container">
 	<ul class="nav nav-tabs nav-justified" data-tabs="tabs">
 		<li class="active" role="presentation">
-<a data-toggle="tab" href="#sale_transaction_details"><?php echo $this->lang->line('sales_transaction_details') ?: 'Transaction Details'; ?></a>
-				<li role="presentation">
-					<a data-toggle="tab" href="#sale_items_list"><?php echo $this->lang->line('sales_items_list') ?: 'Items List'; ?></a>
+			<a data-toggle="tab" href="#sale_transaction_details"><?php echo clean_lang_line($this->lang->line('sales_transaction_details')) ?: 'Transaction Details'; ?></a>
+		</li>
+		<li role="presentation">
+			<a data-toggle="tab" href="#sale_items_list"><?php echo clean_lang_line($this->lang->line('sales_items_list')) ?: 'Items List'; ?></a>
 		</li>
 	</ul>
 
 	<div class="tab-content">
 		<div class="tab-pane fade in active" id="sale_transaction_details">
 			<fieldset id="sale_transaction_info">
-				<legend style="display:none;"><?php echo $this->lang->line('sales_transaction_details') ?: 'Transaction Details'; ?></legend>
+				<legend style="display:none;"><?php echo clean_lang_line($this->lang->line('sales_transaction_details')) ?: 'Transaction Details'; ?></legend>
 
 				<div class="row">
 					<div class="col-xs-6 left-column-fields">
 
 						<div class="form-group form-group-sm">
-							<?php echo form_label($this->lang->line('sales_receipt_number') ?: 'Sale #', 'receipt_number', array('class'=>'control-label col-xs-4')); ?>
+							<?php echo form_label(clean_lang_line($this->lang->line('sales_receipt_number')) ?: 'Sale #', 'receipt_number', array('class'=>'control-label col-xs-4')); ?>
 							<div class='col-xs-8'>
 								<?php echo anchor('sales/receipt/'.$sale_info['sale_id'], 'POS ' . $sale_info['sale_id'], array('target'=>'_blank', 'class'=>'control-label', "style"=>"text-align:left"));?>
 							</div>
 						</div>
 
 						<div class="form-group form-group-sm">
-							<?php echo form_label($this->lang->line('sales_employee') ?: 'Employee', 'employee', array('class'=>'control-label col-xs-4')); ?>
+							<?php echo form_label(clean_lang_line($this->lang->line('sales_employee')) ?: 'Employee', 'employee', array('class'=>'control-label col-xs-4')); ?>
 							<div class='col-xs-8 col-xs-offset-0'>
 								<?php echo form_input(array('name'=>'employee_name', 'value'=>$selected_employee_name, 'id'=>'employee_name', 'class'=>'form-control input-sm'));?>
 								<?php echo form_hidden('employee_id', $selected_employee_id);?>
@@ -37,7 +47,7 @@
 						</div>
 
 						<div class="form-group form-group-sm">
-							<?php echo form_label($this->lang->line('sales_date') ?: 'Sale Date', 'date', array('class'=>'control-label col-xs-4')); ?>
+							<?php echo form_label(clean_lang_line($this->lang->line('sales_date')) ?: 'Sale Date', 'date', array('class'=>'control-label col-xs-4')); ?>
 							<div class='col-xs-8 col-xs-offset-0'>
 								<?php echo form_input(array('name'=>'date','value'=>to_datetime(strtotime($sale_info['sale_time'])), 'class'=>'datetime form-control input-sm'));?>
 							</div>
@@ -48,11 +58,11 @@
 						{
 						?>
 							<div class="form-group form-group-sm">
-								<?php echo form_label($this->lang->line('sales_invoice_number') ?: 'Invoice #', 'invoice_number', array('class'=>'control-label col-xs-4')); ?>
+								<?php echo form_label(clean_lang_line($this->lang->line('sales_invoice_number')) ?: 'Invoice #', 'invoice_number', array('class'=>'control-label col-xs-4')); ?>
 								<div class='col-xs-8 col-xs-offset-0'>
 									<?php if(!empty($sale_info["invoice_number"]) && isset($sale_info['customer_id']) && !empty($sale_info['email'])): ?>
 										<?php echo form_input(array('name'=>'invoice_number', 'size'=>10, 'value'=>$sale_info['invoice_number'], 'id'=>'invoice_number', 'class'=>'form-control input-sm'));?>
-										<a id="send_invoice" href="javascript:void(0);"><?php echo $this->lang->line('sales_send_invoice') ?: 'Send Invoice';?></a>
+										<a id="send_invoice" href="javascript:void(0);"><?php echo clean_lang_line($this->lang->line('sales_send_invoice')) ?: 'Send Invoice';?></a>
 									<?php else: ?>
 										<?php echo form_input(array('name'=>'invoice_number', 'value'=>$sale_info['invoice_number'], 'id'=>'invoice_number', 'class'=>'form-control input-sm'));?>
 									<?php endif; ?>
@@ -63,7 +73,7 @@
 						?>
 
 						<div class="form-group form-group-sm">
-							<?php echo form_label($this->lang->line('sales_customer') ?: 'Customer', 'customer', array('class'=>'control-label col-xs-4')); ?>
+							<?php echo form_label(clean_lang_line($this->lang->line('sales_customer')) ?: 'Customer', 'customer', array('class'=>'control-label col-xs-4')); ?>
 							<div class='col-xs-8 col-xs-offset-0'>
 								<?php echo form_input(array('name'=>'customer_name', 'value'=>$selected_customer_name, 'id'=>'customer_name', 'class'=>'form-control input-sm'));?>
 								<?php echo form_hidden('customer_id', $selected_customer_id);?>
@@ -77,7 +87,7 @@
 						{
 						?>
 							<div class="form-group form-group-sm">
-								<?php echo form_label($this->lang->line('sales_payment') ?: 'Payment Type', 'payment_new', array('class'=>'control-label col-xs-4')); ?>
+								<?php echo form_label(clean_lang_line($this->lang->line('sales_payment')) ?: 'Payment Type', 'payment_new', array('class'=>'control-label col-xs-4')); ?>
 								<div class='col-xs-8 col-xs-offset-0'>
 									<div class="row">
 										<div class='col-xs-6'>
@@ -109,14 +119,14 @@
 							$is_giftcard = !empty(strstr($row->payment_type, $this->lang->line('sales_giftcard')));
 						?>
 							<div class="form-group form-group-sm">
-								<?php echo form_label($this->lang->line('sales_payment') ?: 'Payment Type', 'payment_'.$i, array('class'=>'control-label col-xs-4')); ?>
+								<?php echo form_label(clean_lang_line($this->lang->line('sales_payment')) ?: 'Payment Type', 'payment_'.$i, array('class'=>'control-label col-xs-4')); ?>
 								<div class='col-xs-8 col-xs-offset-0'>
 									<?php echo form_input(array('name'=>'payment_type_'.$i, 'value'=>$row->payment_type, 'id'=>'payment_type_'.$i, 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
 								</div>
 							</div>
 
 							<div class="form-group form-group-sm">
-								<?php echo form_label($this->lang->line('Sales Amount') ?: 'Amount', 'payment_amount_'.$i, array('class'=>'control-label col-xs-4')); ?>
+								<?php echo form_label(clean_lang_line($this->lang->line('sales_amount')) ?: 'Amount', 'payment_amount_'.$i, array('class'=>'control-label col-xs-4')); ?>
 								<div class='col-xs-8 col-xs-offset-0'>
 									<div class="input-group input-group-sm">
 										<?php if(!currency_side()): ?>
@@ -131,7 +141,7 @@
 							</div>
 
 							<div class="form-group form-group-sm">
-								<?php echo form_label($this->lang->line('Refund type') ?: 'Refund Type', 'Refund type'.$i, array('class'=>'control-label col-xs-4')); ?>
+								<?php echo form_label(clean_lang_line($this->lang->line('sales_refund_type')) ?: 'Refund Type', 'refund_type_'.$i, array('class'=>'control-label col-xs-4')); ?>
 								<div class='col-xs-8 col-xs-offset-0'>
 									<?php if($is_giftcard): ?>
 										<?php echo form_input(array('name'=>'refund_type_'.$i, 'value'=>$this->lang->line('sales_cash'), 'id'=>'refund_type_'.$i, 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
@@ -142,7 +152,7 @@
 							</div>
 
 							<div class="form-group form-group-sm">
-								<?php echo form_label($this->lang->line('Refund Amount') ?: 'Refund Amount', 'refund_amount_'.$i, array('class'=>'control-label col-xs-4')); ?>
+								<?php echo form_label(clean_lang_line($this->lang->line('sales_refund_amount')) ?: 'Refund Amount', 'refund_amount_'.$i, array('class'=>'control-label col-xs-4')); ?>
 								<div class='col-xs-8 col-xs-offset-0'>
 									<div class="input-group input-group-sm">
 										<?php if(!currency_side()): ?>
@@ -165,7 +175,7 @@
 				</div>
 
 				<div class="form-group form-group-sm full-width">
-					<?php echo form_label($this->lang->line('sales_comment') ?: 'Comment', 'comment', array('class'=>'control-label col-xs-3')); ?>
+					<?php echo form_label(clean_lang_line($this->lang->line('sales_comment')) ?: 'Comment', 'comment', array('class'=>'control-label col-xs-3')); ?>
 					<div class='col-xs-8 col-xs-offset-0'>
 						<?php echo form_textarea(array('name'=>'comment', 'value'=>$sale_info['comment'], 'id'=>'comment', 'rows'=>2, 'class'=>'form-control input-sm'));?>
 					</div>
@@ -178,11 +188,11 @@
 				<table class="table table-striped table-bordered table-hover table-items">
 					<thead>
 						<tr>
-							<th><?php echo $this->lang->line('sales_item_name') ?: 'Item Name'; ?></th>
-							<th class="text-center"><?php echo $this->lang->line('sales_quantity') ?: 'Quantity'; ?></th>
-							<th class="text-center"><?php echo $this->lang->line('sales_price') ?: 'Price'; ?></th>
-							<th class="text-center"><?php echo $this->lang->line('sales_discount') ?: 'Discount'; ?></th>
-							<th class="text-right"><?php echo $this->lang->line('sales_total') ?: 'Total'; ?></th>
+							<th><?php echo clean_lang_line($this->lang->line('sales_item_name')) ?: 'Item Name'; ?></th>
+							<th class="text-center"><?php echo clean_lang_line($this->lang->line('sales_quantity')) ?: 'Quantity'; ?></th>
+							<th class="text-center"><?php echo clean_lang_line($this->lang->line('sales_price')) ?: 'Price'; ?></th>
+							<th class="text-center"><?php echo clean_lang_line($this->lang->line('sales_discount')) ?: 'Discount'; ?></th>
+							<th class="text-right"><?php echo clean_lang_line($this->lang->line('sales_total')) ?: 'Total'; ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -203,7 +213,7 @@
 									if($item->discount_type == FIXED) {
 										$subtotal -= $item->discount;
 									} else {
-										$subtotal -= ($item->item_unit_price * $item->quantity_purchased * $item->discount / 100);
+										$subtotal -= ($item->quantity * $item->item_unit_price * $item->discount / 100);
 									}
 									echo to_currency($subtotal);
 									?>
@@ -224,7 +234,7 @@ $(document).ready(function()
 {
 	<?php if(!empty($sale_info['email'])): ?>
 		$('#send_invoice').click(function(event) {
-			if (confirm("<?php echo $this->lang->line('sales_invoice_confirm') . ' ' . $sale_info['email'] ?>")) {
+			if (confirm("<?php echo clean_lang_line($this->lang->line('sales_invoice_confirm')) ?: 'Confirm send invoice to' . ' ' . $sale_info['email'] ?>")) {
 				$.get("<?php echo site_url($controller_name . '/send_pdf/' . $sale_info['sale_id']); ?>",
 					function(response) {
 						BootstrapDialog.closeAll();
@@ -301,7 +311,7 @@ $(document).ready(function()
 
 		messages:
 		{
-			invoice_number: "<?php echo $this->lang->line("sales_invoice_number_duplicate") ?: 'Invoice Number must be unique'; ?>"
+			invoice_number: "<?php echo clean_lang_line($this->lang->line("sales_invoice_number_duplicate")) ?: 'Invoice Number must be unique'; ?>"
 		}
 	}, form_support.error));
 });

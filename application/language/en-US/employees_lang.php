@@ -36,3 +36,4 @@ $lang["employees_update"] = "Update Employee";
 $lang["employees_username"] = "Username";
 $lang["employees_username_minlength"] = "Username must be at least 5 characters in length.";
 $lang["employees_username_required"] = "Username is a required field.";
+$lang["employees_list_title"] = "Employee List";

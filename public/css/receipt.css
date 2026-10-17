@@ -1,6 +1,8 @@
 #receipt_wrapper
 {
-	width:100%;	
+	width:100%;
+	max-width: 320px;
+	margin: 0 auto;
 }
 
 #receipt_header
@@ -16,8 +18,8 @@
 
 #company_name img
 {
-	width: 30px;
-	height: 30px;
+	width: 20px;
+	height: 20px;
 	object-fit: cover;
 	border-radius: 50%;
 }

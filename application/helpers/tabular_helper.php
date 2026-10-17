@@ -202,7 +202,7 @@ function get_person_data_row($person)
 		'people.person_id' => $person->person_id,
 		'last_name' => $person->last_name,
 		'first_name' => $person->first_name,
-		'email' => empty($person->email) ? '' : mailto($person->email, $person->email),
+		'email' => empty($person->email) ? '' : '<a href="javascript:void(0);" class="email-link" data-person-id="' . $person->person_id . '" data-email="' . htmlspecialchars($person->email) . '" data-name="' . htmlspecialchars($person->first_name . ' ' . $person->last_name) . '">' . $person->email . '</a>',
 		'phone_number' => $person->phone_number,
 		'messages' => empty($person->phone_number) ? '' : anchor("Messages/view/$person->person_id", '<span class="glyphicon glyphicon-phone"></span>',
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line('messages_sms_send'))),

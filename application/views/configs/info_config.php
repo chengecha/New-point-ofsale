@@ -65,6 +65,52 @@
 				</div>
 			</div>
 
+			<div class="form-group form-group-sm">
+				<?php echo form_label($this->lang->line('config_social_media'), '', array('class' => 'control-label col-xs-2')); ?>
+				<div class="col-xs-6">
+					<div class="form-group form-group-sm" style="margin-bottom: 0.3rem;">
+						<?php echo form_input(array(
+							'name' => 'social_facebook',
+							'id' => 'social_facebook',
+							'class' => 'form-control input-sm',
+							'placeholder' => $this->lang->line('config_social_facebook'),
+							'value' => $this->config->item('social_facebook'))); ?>
+					</div>
+					<div class="form-group form-group-sm" style="margin-bottom: 0.3rem;">
+						<?php echo form_input(array(
+							'name' => 'social_twitter',
+							'id' => 'social_twitter',
+							'class' => 'form-control input-sm',
+							'placeholder' => $this->lang->line('config_social_twitter'),
+							'value' => $this->config->item('social_twitter'))); ?>
+					</div>
+					<div class="form-group form-group-sm" style="margin-bottom: 0.3rem;">
+						<?php echo form_input(array(
+							'name' => 'social_instagram',
+							'id' => 'social_instagram',
+							'class' => 'form-control input-sm',
+							'placeholder' => $this->lang->line('config_social_instagram'),
+							'value' => $this->config->item('social_instagram'))); ?>
+					</div>
+					<div class="form-group form-group-sm" style="margin-bottom: 0.3rem;">
+						<?php echo form_input(array(
+							'name' => 'social_tiktok',
+							'id' => 'social_tiktok',
+							'class' => 'form-control input-sm',
+							'placeholder' => $this->lang->line('config_social_tiktok'),
+							'value' => $this->config->item('social_tiktok'))); ?>
+					</div>
+					<div class="form-group form-group-sm" style="margin-bottom: 0;">
+						<?php echo form_input(array(
+							'name' => 'social_linkedin',
+							'id' => 'social_linkedin',
+							'class' => 'form-control input-sm',
+							'placeholder' => $this->lang->line('config_social_linkedin'),
+							'value' => $this->config->item('social_linkedin'))); ?>
+					</div>
+				</div>
+			</div>
+
 			<div class="form-group form-group-sm">	
 				<?php echo form_label($this->lang->line('common_email'), 'email', array('class' => 'control-label col-xs-2')); ?>
 				<div class="col-xs-6">
